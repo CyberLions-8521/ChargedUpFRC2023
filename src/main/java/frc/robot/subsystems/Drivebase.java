@@ -27,9 +27,9 @@ public class Drivebase extends SubsystemBase {
   private final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftMaster, m_leftSlave);
   private final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightMaster, m_rightSlave);
 
-  private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftGroup, m_rightMaster);
+  private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftGroup, m_rightGroup);
 
-  AHRS m_gyro = new AHRS(Port.kMXP);
+  //AHRS m_gyro = new AHRS(Port.kMXP);
 
   public Drivebase() {
     m_rightGroup.setInverted(true);

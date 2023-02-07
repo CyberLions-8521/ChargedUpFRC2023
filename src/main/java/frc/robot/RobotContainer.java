@@ -7,9 +7,11 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ArmAndJoint;
+//import frc.robot.subsystems.ArmAndJoint;
+import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.JoystickDriving;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -22,7 +24,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final ArmAndJoint m_armAndJoint = new ArmAndJoint();
+  //private final ArmAndJoint m_armAndJoint = new ArmAndJoint();
+  private final Drivebase m_drivebase = new Drivebase();
+
+  public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public final static CommandXboxController m_driverController =
@@ -30,6 +35,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    m_drivebase.setDefaultCommand(m_joystickDriving);
     // Configure the trigger bindings
     configureBindings();
   }
@@ -60,6 +66,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return m_armAndJoint.PIDArmAndJoint(3, 2);
+    //return m_armAndJoint.PIDArmAndJoint(3, 2);
+    return null;
   }
 }

@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ArmAndJoint extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
 
-  private final CANSparkMax m_jointMotor = new CANSparkMax(0, MotorType.kBrushless);
-  private final CANSparkMax m_armMotor = new CANSparkMax(0, MotorType.kBrushless);
+  //private final CANSparkMax m_jointMotor = new CANSparkMax(0, MotorType.kBrushless);
+  //private final CANSparkMax m_armMotor = new CANSparkMax(0, MotorType.kBrushless);
 
   private final RelativeEncoder m_jointEncoder = m_jointMotor.getAlternateEncoder(Type.kQuadrature, 8192);
   private final RelativeEncoder m_ArmEncoder = m_jointMotor.getAlternateEncoder(Type.kQuadrature, 8192);
