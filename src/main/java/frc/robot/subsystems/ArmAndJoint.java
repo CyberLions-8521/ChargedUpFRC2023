@@ -70,7 +70,7 @@ public class ArmAndJoint extends SubsystemBase {
 
   public double getCurrentAngle(){
     double revolutions = m_jointEncoder.getPosition();
-    double angle = (360/revolutions);
+    double angle = (360*revolutions);
     return angle;
   }
 
