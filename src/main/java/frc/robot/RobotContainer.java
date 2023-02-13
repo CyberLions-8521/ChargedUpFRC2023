@@ -40,6 +40,7 @@ public class RobotContainer {
 
   //COMMANDS
   public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
+  // Prevent robot from falling over from going too fast
   PathPlannerTrajectory examplePath = PathPlanner.loadPath("jacksonLarry", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed

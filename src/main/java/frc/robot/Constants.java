@@ -29,11 +29,9 @@ public final class Constants {
     public static final double kPDriveVel = 2;
     public static final double kDDriveVel = 0.01;
     public static final double kIDriveVel = 0.01;
-    
-
   }
 
-  public static final class  v      {
+  public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 0.6;
     public static final double kMaxAccelerationMetersPerSecondSquared = 0.4;
 
