@@ -95,12 +95,12 @@ public class Drivebase extends SubsystemBase {
   public DifferentialDriveKinematics getKinematics(){
     return m_kinematics;
   }
- 
+ */
   public void resetEncoders() {
     m_leftEncoder.setPosition(0);
     m_rightEncoder.setPosition(0);
   }
-
+/* 
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
     m_odometry.resetPosition(
@@ -159,7 +159,7 @@ public class Drivebase extends SubsystemBase {
       m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch());
     m_field.setRobotPose(m_odometry.getPoseMeters());*/
     SmartDashboard.putNumber("rotations of left", m_leftEncoder.getPosition());
-    SmartDashboard.putNumber("rate of left", m_leftEncoder.getVelocity());
+    SmartDashboard.putNumber("rate of left", Math.abs(m_leftEncoder.getVelocity()));
     SmartDashboard.putNumber("rotations of right", m_rightEncoder.getPosition());
     SmartDashboard.putNumber("rate of right", m_rightEncoder.getVelocity());
   } 
