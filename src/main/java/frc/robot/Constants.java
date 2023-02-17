@@ -16,6 +16,11 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final class ElevatorConstants{
+    public static final double height = 5;
+    public static final double r1 = 3;
+  }
+
   public static final class DriveConstants{
     public static final double kTrackwidthMeters = 0.0;
     public static final double kWheelDiameter = Units.inchesToMeters(6);

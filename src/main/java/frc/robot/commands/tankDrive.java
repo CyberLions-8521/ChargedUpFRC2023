@@ -10,7 +10,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class JoystickDriving extends CommandBase {
+public class tankDrive extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Drivebase m_db;
 
@@ -19,7 +19,7 @@ public class JoystickDriving extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public JoystickDriving(Drivebase db) {
+  public tankDrive(Drivebase db) {
     m_db = db;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(db);
@@ -27,19 +27,21 @@ public class JoystickDriving extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    //m_db.resetEncoders();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_db.arcadeDrive(RobotContainer.m_driverController.getLeftY(), RobotContainer.m_driverController.getRightX());
-    //m_db.m_leftGroup.setVoltage(0.6);
-    //m_db.m_rightGroup.setVoltage(0.6);
+    m_db.tankDrive(RobotContainer.m_driverController.getLeftY(), RobotContainer.m_driverController.getRightY());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_db.tankDrive(0, 0);
+  }
 
   // Returns true when the command should end.
   @Override

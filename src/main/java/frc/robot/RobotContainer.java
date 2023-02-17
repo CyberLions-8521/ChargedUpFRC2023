@@ -6,11 +6,13 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ExampleCommand;
+//import frc.robot.commands.JoystickArm;
 //import frc.robot.subsystems.ArmAndJoint;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.JoystickDriving;
+import frc.robot.commands.tankDrive;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -37,16 +39,19 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   //private final ArmAndJoint m_armAndJoint = new ArmAndJoint();
   private final Drivebase m_drivebase = new Drivebase();
+  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
-  //COMMANDS
   public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
-  PathPlannerTrajectory examplePath = PathPlanner.loadPath("jacksonLarry", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  public final tankDrive m_tankDrive = new  tankDrive(m_drivebase);
+  //public final JoystickArm m_joystickArm = new JoystickArm(m_armAndJoint);
+
+  //PathPlannerTrajectory examplePath = PathPlanner.loadPath("jacksonLarry", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public final static CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
-      public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+      /*public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
         return new SequentialCommandGroup(
             new InstantCommand(() -> {
               // Reset odometry for the first path you run during auto
@@ -68,11 +73,13 @@ public class RobotContainer {
                 m_drivebase // Requires this drive subsystem
             )
         );
-      }
+      }*/
     
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_drivebase.setDefaultCommand(m_joystickDriving);
+   //m_drivebase.setDefaultCommand(m_tankDrive);
+    //m_armAndJoint.setDefaultCommand(m_joystickArm);
     // Configure the trigger bindings
     configureBindings();
   }
@@ -93,7 +100,12 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
+    /*m_driverController.b().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(0, 30));
+    m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(1,25));
+    m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(4,0));
+    m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(2,-10));*/
   }
 
   /**
@@ -104,6 +116,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     //return m_armAndJoint.PIDArmAndJoint(3, 2);
-    return followTrajectoryCommand(examplePath, true);
+    //return followTrajectoryCommand(examplePath, true);
+    return m_autoCommand;
+
   }
 }
