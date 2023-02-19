@@ -22,25 +22,24 @@ public final class Constants {
   }
 
   public static final class DriveConstants{
-    public static final double kTrackwidthMeters = 0.0;
+    public static final double kTrackwidthMeters = Units.inchesToMeters(24);
     public static final double kWheelDiameter = Units.inchesToMeters(6);
 
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
     
-    public static final double ksVolts = 0;
-    public static final double kvVoltSecondsPerMeter = 0;
-    public static final double kaVoltSecondsSquaredPerMeter = 0;
+    public static final double ksVolts = 0.096808;
+    public static final double kvVoltSecondsPerMeter = 2.811;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.11014;
 
-    public static final double kPDriveVel = 2;
-    public static final double kDDriveVel = 0.01;
-    public static final double kIDriveVel = 0.01;
-    
-
+    public static final double kPDriveVel = 0.0785;
+    public static final double kDDriveVel = 0.0;
+    public static final double kIDriveVel = 0.0;
+  
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 0.6;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0.4;
+    public static final double kMaxSpeedMetersPerSecond = 2.0;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 3.0;
 
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     public static final double kRamseteB = 2;

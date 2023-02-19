@@ -45,13 +45,13 @@ public class RobotContainer {
   public final tankDrive m_tankDrive = new  tankDrive(m_drivebase);
   //public final JoystickArm m_joystickArm = new JoystickArm(m_armAndJoint);
 
-  //PathPlannerTrajectory examplePath = PathPlanner.loadPath("jacksonLarry", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  PathPlannerTrajectory examplePath = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public final static CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
-      /*public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+      public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
         return new SequentialCommandGroup(
             new InstantCommand(() -> {
               // Reset odometry for the first path you run during auto
@@ -73,7 +73,7 @@ public class RobotContainer {
                 m_drivebase // Requires this drive subsystem
             )
         );
-      }*/
+      }
     
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -116,8 +116,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     //return m_armAndJoint.PIDArmAndJoint(3, 2);
-    //return followTrajectoryCommand(examplePath, true);
-    return m_autoCommand;
+    return followTrajectoryCommand(examplePath, true);
+    //return m_autoCommand;
 
   }
 }
