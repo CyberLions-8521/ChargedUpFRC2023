@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drivebase;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -38,14 +37,16 @@ public class TurnToTarget extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (target.equals("april tag")){
-      pipelineNum = 0;
-    }
-    else if (target.equals("cone")){
-      pipelineNum = 1;
-    }
-    else if (target.equals("cube")){
-      pipelineNum = 2;
+    switch(target){
+      case "april tag":
+        pipelineNum = 0;
+        break;
+      case "cone":
+        pipelineNum = 1;
+        break;
+      case "cube":
+        pipelineNum = 2;
+        break;
     }
   }
 
@@ -53,7 +54,6 @@ public class TurnToTarget extends CommandBase {
   @Override
   public void execute() {
     m_limelight.setPipeline(pipelineNum);
-
     double output = m_pid.calculate(m_limelight.getTx(), 0);
     m_drivebase.arcadeDrive(0,output);
   }

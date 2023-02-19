@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -39,12 +40,16 @@ public class Drivebase extends SubsystemBase {
   private final RelativeEncoder m_rightEncoder = m_rightSlave.getEncoder();
   private final RelativeEncoder m_leftEncoder = m_leftMaster.getEncoder();
 
+  private final SlewRateLimiter m_rateLimiter = new SlewRateLimiter(0.5);
+
   public final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftMaster, m_leftSlave);
   public final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightMaster, m_rightSlave);
 
+  public final DifferentialDriveWheelSpeeds m_diffDriveWheelSpeeds = new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(), m_rightEncoder.getVelocity());
+
   private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftGroup, m_rightGroup);
 
-  private final AHRS m_gyro = new AHRS(Port.kMXP);
+  public final AHRS m_gyro = new AHRS(Port.kMXP);
 
   public Drivebase() {
     m_rightGroup.setInverted(true);
@@ -73,7 +78,7 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void arcadeDrive(double xSpeed, double zSpeed){
-    m_diffDrive.arcadeDrive(xSpeed, zSpeed);
+    m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed), zSpeed);
   }
 
   /**
@@ -93,6 +98,10 @@ public class Drivebase extends SubsystemBase {
   public DifferentialDriveKinematics getKinematics(){
     return m_kinematics;
   }
+
+  public double getWheelVelocity(){
+    return m_diffDriveWheelSpeeds.leftMetersPerSecond;
+  }
  
   public void resetEncoders() {
     m_leftEncoder.setPosition(0);
@@ -106,7 +115,7 @@ public class Drivebase extends SubsystemBase {
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(), m_rightEncoder.getVelocity());
+    return m_diffDriveWheelSpeeds;
   }
 
   public double getLeftDistanceInch() {
@@ -153,9 +162,7 @@ public class Drivebase extends SubsystemBase {
     //This method will be called once per scheduler run
     m_odometry.update(
       m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch());
-
     m_field.setRobotPose(m_odometry.getPoseMeters());
-
     SmartDashboard.putNumber("rotations of left", m_leftEncoder.getPosition());
     SmartDashboard.putNumber("rate of left", Math.abs(m_leftEncoder.getVelocity()));
     SmartDashboard.putNumber("rotations of right", m_rightEncoder.getPosition());

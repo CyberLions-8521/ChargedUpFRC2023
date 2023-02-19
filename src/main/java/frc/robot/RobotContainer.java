@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -34,15 +36,18 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+  //The robot's subsystems and commands are defined here...
   //SUBSYSTEMS
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   //private final ArmAndJoint m_armAndJoint = new ArmAndJoint();
   private final Drivebase m_drivebase = new Drivebase();
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
   public final tankDrive m_tankDrive = new  tankDrive(m_drivebase);
+
+  
   //public final JoystickArm m_joystickArm = new JoystickArm(m_armAndJoint);
 
   PathPlannerTrajectory examplePath = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
@@ -50,6 +55,9 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public final static CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
+    public final static CommandXboxController m_driverController2 =
+      new CommandXboxController(1);
 
       public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
         return new SequentialCommandGroup(
@@ -78,11 +86,14 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_drivebase.setDefaultCommand(m_joystickDriving);
-   //m_drivebase.setDefaultCommand(m_tankDrive);
+    m_chooser.setDefaultOption("Simple Auto", null);
+    m_chooser.addOption("Complex Auto", null);
+    SmartDashboard.putData(m_chooser);
+    //m_drivebase.setDefaultCommand(m_tankDrive);
     //m_armAndJoint.setDefaultCommand(m_joystickArm);
-    // Configure the trigger bindings
     configureBindings();
   }
+
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -116,7 +127,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     //return m_armAndJoint.PIDArmAndJoint(3, 2);
-    return followTrajectoryCommand(examplePath, true);
+    //return followTrajectoryCommand(examplePath, true);
+    return m_chooser.getSelected();
     //return m_autoCommand;
 
   }

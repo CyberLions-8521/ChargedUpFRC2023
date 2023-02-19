@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Limelight extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public Limelight() {
-    //table.get
   }
 
   /**
@@ -32,13 +31,15 @@ public class Limelight extends SubsystemBase {
   }
 
   NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-
   NetworkTableEntry tx = table.getEntry("tx");
   NetworkTableEntry ty = table.getEntry("ty");
   NetworkTableEntry ta = table.getEntry("ta");
   NetworkTableEntry tv = table.getEntry("tv");
+  NetworkTableEntry pose = table.getEntry("botpose");
+  NetworkTableEntry pose_blue = table.getEntry("botpose_wpiblue");
+  NetworkTableEntry pose_red = table.getEntry("botpose_wpired");
+  NetworkTableEntry current_pipe = table.getEntry("getpipe");
 
-  NetworkTableEntry tpipeline = table.getEntry("getpipe");
 
   public double getTx(){
     return tx.getDouble(0.0);
@@ -57,7 +58,11 @@ public class Limelight extends SubsystemBase {
   }
 
   public void setPipeline(int target){
-    tpipeline.setDouble(target);
+    table.getEntry("pipeline").setNumber(target);
+  }
+
+  public boolean getDetectedTarget() {
+    return (tv.getDouble(0.0) == 1);
   }
 
   /**
@@ -77,14 +82,10 @@ public class Limelight extends SubsystemBase {
     double y = ty.getDouble(0.0);
     double v = tv.getDouble(0.0);
     double area = ta.getDouble(0.0);
-
     SmartDashboard.putNumber("LimelightX", x);
     SmartDashboard.putNumber("LimelightY", y);
     SmartDashboard.putNumber("LimelightArea", area);
-
     SmartDashboard.putString("Target", "april tag");
-    SmartDashboard.getData("Target");
-
   }
 
   @Override
