@@ -34,7 +34,7 @@ public class JoystickDriving extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_db.arcadeDrive(RobotContainer.m_driverController.getLeftY(), RobotContainer.m_driverController.getRightX());
+    m_db.arcadeDrive(-RobotContainer.m_driverController.getRightX(), -RobotContainer.m_driverController.getLeftY());
     //m_db.m_leftGroup.setVoltage(0.6);
     //m_db.m_rightGroup.setVoltage(0.6);
   }
