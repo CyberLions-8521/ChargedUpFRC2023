@@ -40,7 +40,7 @@ public class Drivebase extends SubsystemBase {
   private final RelativeEncoder m_rightEncoder = m_rightSlave.getEncoder();
   private final RelativeEncoder m_leftEncoder = m_leftMaster.getEncoder();
 
-  private final SlewRateLimiter m_rateLimiter = new SlewRateLimiter(0.5);
+  private final SlewRateLimiter m_rateLimiter = new SlewRateLimiter(0.3);
 
   public final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftMaster, m_leftSlave);
   public final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightMaster, m_rightSlave);
@@ -52,7 +52,7 @@ public class Drivebase extends SubsystemBase {
   public final AHRS m_gyro = new AHRS(Port.kMXP);
 
   public Drivebase() {
-    m_rightGroup.setInverted(true);
+    m_rightGroup.setInverted(false);
     m_gyro.reset();
     resetEncoders();
 
@@ -78,7 +78,7 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void arcadeDrive(double xSpeed, double zSpeed){
-    m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed), zSpeed);
+    m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed), zSpeed * 0.5);
   }
 
   /**

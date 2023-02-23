@@ -6,14 +6,13 @@ package frc.robot.commands;
 
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivebase;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
 public class JoystickDriving extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Drivebase m_db;
-
+//hi
   /**
    * Creates a new ExampleCommand.
    *
@@ -34,9 +33,8 @@ public class JoystickDriving extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_db.arcadeDrive(-RobotContainer.m_driverController.getRightX(), -RobotContainer.m_driverController.getLeftY());
-    //m_db.m_leftGroup.setVoltage(0.6);
-    //m_db.m_rightGroup.setVoltage(0.6);
+    m_db.arcadeDrive(RobotContainer.m_driverController.getLeftY(), RobotContainer.m_driverController.getRightX());
+    //m_db.arcadeDrive(-RobotContainer.m_driverController.getRightX(), RobotContainer.m_driverController.getLeftY());
   }
 
   // Called once the command ends or is interrupted.

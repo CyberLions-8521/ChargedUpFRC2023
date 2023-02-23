@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.JoystickArm;
+import frc.robot.subsystems.ArmAndJoint;
 //import frc.robot.commands.JoystickArm;
 //import frc.robot.subsystems.ArmAndJoint;
 import frc.robot.subsystems.Drivebase;
@@ -15,6 +17,10 @@ import frc.robot.commands.JoystickDriving;
 import frc.robot.commands.tankDrive;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
@@ -39,7 +45,8 @@ public class RobotContainer {
   //The robot's subsystems and commands are defined here...
   //SUBSYSTEMS
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  //private final ArmAndJoint m_armAndJoint = new ArmAndJoint();
+  private final ArmAndJoint m_armAndJoint = new ArmAndJoint();
+  private final JoystickArm m_joystickArm = new JoystickArm(m_armAndJoint);
   private final Drivebase m_drivebase = new Drivebase();
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -47,17 +54,26 @@ public class RobotContainer {
   public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
   public final tankDrive m_tankDrive = new  tankDrive(m_drivebase);
 
+  //List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("New Path", new PathConstraints(4, 3));
+
+  // HashMap<String, Command> eventMap = new HashMap<>();
+  // eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+  // eventMap.put("intakeDown", new IntakeDown());
+
   
   //public final JoystickArm m_joystickArm = new JoystickArm(m_armAndJoint);
 
   PathPlannerTrajectory examplePath = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
+  // ArrayList<PathPlannerTrajectory> pathGroup2 = PathPlanner.loadPathGroup(
+  //   "Example Path Group", 
+  //   new PathConstraints(4, 3), 
+  //   new PathConstraints(2, 2), 
+  //   new PathConstraints(3, 3));
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public final static CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
-    public final static CommandXboxController m_driverController2 =
-      new CommandXboxController(1);
 
       public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
         return new SequentialCommandGroup(
@@ -85,12 +101,12 @@ public class RobotContainer {
     
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    m_drivebase.setDefaultCommand(m_joystickDriving);
+    //m_drivebase.setDefaultCommand(m_joystickDriving);
     m_chooser.setDefaultOption("Simple Auto", null);
     m_chooser.addOption("Complex Auto", null);
     SmartDashboard.putData(m_chooser);
     //m_drivebase.setDefaultCommand(m_tankDrive);
-    //m_armAndJoint.setDefaultCommand(m_joystickArm);
+    m_armAndJoint.setDefaultCommand(m_joystickArm);
     configureBindings();
   }
 
@@ -127,8 +143,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     //return m_armAndJoint.PIDArmAndJoint(3, 2);
-    //return followTrajectoryCommand(examplePath, true);
-    return m_chooser.getSelected();
+    return followTrajectoryCommand(examplePath, true);
+    //return m_chooser.getSelected();
     //return m_autoCommand;
 
   }

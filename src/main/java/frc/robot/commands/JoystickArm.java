@@ -13,9 +13,6 @@ public class JoystickArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ArmAndJoint m_armAndJoint;
 
-  double leftJoyY;
-  double rightJoyY;
-
   /**
    * Creates a new ExampleCommand.
    *
@@ -44,6 +41,7 @@ public class JoystickArm extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (m_armAndJoint.isLimitSwitchPressed());
+    //return (m_armAndJoint.isLimitSwitchPressed());
+    return false;
   }
 }
