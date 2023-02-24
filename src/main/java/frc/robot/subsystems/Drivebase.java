@@ -40,7 +40,7 @@ public class Drivebase extends SubsystemBase {
   private final RelativeEncoder m_rightEncoder = m_rightSlave.getEncoder();
   private final RelativeEncoder m_leftEncoder = m_leftMaster.getEncoder();
 
-  private final SlewRateLimiter m_rateLimiter = new SlewRateLimiter(0.3);
+  private final SlewRateLimiter m_rateLimiter = new SlewRateLimiter(0.5);
 
   public final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftMaster, m_leftSlave);
   public final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightMaster, m_rightSlave);
@@ -78,7 +78,8 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void arcadeDrive(double xSpeed, double zSpeed){
-    m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed), zSpeed * 0.5);
+    //m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed), zSpeed * 0.5);
+    m_diffDrive.arcadeDrive(xSpeed * 0.75, zSpeed * 0.75);
   }
 
   /**

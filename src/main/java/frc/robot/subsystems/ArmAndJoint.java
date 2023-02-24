@@ -14,18 +14,23 @@ import com.revrobotics.SparkMaxAlternateEncoder.Type;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmAndJoint extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  private final CANSparkMax m_jointMotor = new CANSparkMax(5, MotorType.kBrushless);
+  private final CANSparkMax m_jointMotor1 = new CANSparkMax(5, MotorType.kBrushless);
+  private final CANSparkMax m_jointMotor2 = new CANSparkMax(6, MotorType.kBrushless);
 
   //private final SparkMaxLimitSwitch m_limitSwitch = m_jointMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-  private final CANSparkMax m_armMotor = new CANSparkMax(6, MotorType.kBrushless);
+  public final CANSparkMax m_armMotor = new CANSparkMax(30, MotorType.kBrushless);
 
-  private final RelativeEncoder m_jointEncoder = m_jointMotor.getAlternateEncoder(Type.kQuadrature, 8192);
+  public final MotorControllerGroup m_jointGroup = new MotorControllerGroup(m_jointMotor1, m_jointMotor2);
+
+  //private final RelativeEncoder m_jointEncoder = m_jointMotor.getAlternateEncoder(Type.kQuadrature, 8192);
   //private final AnalogPotentiometer m_armPotentiometer = new AnalogPotentiometer(0, 933, -30);
 
   private final PIDController m_PID1 = new PIDController(0.1, 0, 0);
@@ -33,8 +38,9 @@ public class ArmAndJoint extends SubsystemBase {
 
 
   public ArmAndJoint() {
-    m_jointEncoder.setPosition(0);
-    m_jointMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
+    //m_jointEncoder.setPosition(0);
+    //m_jointMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
+    m_jointMotor1.setInverted(true);
   }
 
   /**
@@ -49,6 +55,20 @@ public class ArmAndJoint extends SubsystemBase {
         () -> {
           /* one-time action goes here */
         });
+  }
+
+  public CommandBase retractArm() {
+    return runOnce(
+      () -> {
+        m_armMotor.set(-0.25);
+      });
+  }
+
+  public CommandBase extendArm() {
+    return runOnce(
+      () -> {
+        m_armMotor.set(0.25);
+      });
   }
 
 /* 
@@ -75,17 +95,16 @@ public class ArmAndJoint extends SubsystemBase {
     return m_limitSwitch.isPressed();
   }*/
 
-  public void move(double leftJoyY, double rightJoyY){
-    m_jointMotor.set(leftJoyY * 0.25 );
-    m_armMotor.set(rightJoyY * 0.25);
+  public void move(double leftTrigger, double rightTrigger){
+    m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.009);
   }
-
+/* 
   public double getCurrentAngle(){
     double revolutions = m_jointEncoder.getPosition();
     double angle = (360*revolutions);
     return angle;
   }
-/* 
+
   public double getR2Length(){
     return m_armPotentiometer.get();
     //final double m = 0;
@@ -139,7 +158,7 @@ public class ArmAndJoint extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Angle of Joint", getCurrentAngle());
+    //SmartDashboard.putNumber("Angle of Joint", getCurrentAngle());
     //SmartDashboard.putNumber("R2 Length", getR2Length());
   }
 

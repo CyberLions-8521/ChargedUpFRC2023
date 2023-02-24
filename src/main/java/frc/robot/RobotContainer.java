@@ -12,11 +12,13 @@ import frc.robot.subsystems.ArmAndJoint;
 //import frc.robot.subsystems.ArmAndJoint;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.JoystickDriving;
-import frc.robot.commands.tankDrive;
+import frc.robot.commands.TurnToTarget;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -51,25 +54,12 @@ public class RobotContainer {
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+  private final Limelight m_limelight = new Limelight();
+  private final TurnToTarget m_turnToTarget = new TurnToTarget(m_limelight, m_drivebase, "april tag");
+
   public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
-  public final tankDrive m_tankDrive = new  tankDrive(m_drivebase);
-
-  //List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("New Path", new PathConstraints(4, 3));
-
-  // HashMap<String, Command> eventMap = new HashMap<>();
-  // eventMap.put("marker1", new PrintCommand("Passed marker 1"));
-  // eventMap.put("intakeDown", new IntakeDown());
-
-  
-  //public final JoystickArm m_joystickArm = new JoystickArm(m_armAndJoint);
 
   PathPlannerTrajectory examplePath = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-
-  // ArrayList<PathPlannerTrajectory> pathGroup2 = PathPlanner.loadPathGroup(
-  //   "Example Path Group", 
-  //   new PathConstraints(4, 3), 
-  //   new PathConstraints(2, 2), 
-  //   new PathConstraints(3, 3));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public final static CommandXboxController m_driverController =
@@ -101,8 +91,9 @@ public class RobotContainer {
     
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    //m_drivebase.setDefaultCommand(m_joystickDriving);
+    m_drivebase.setDefaultCommand(m_joystickDriving);
     m_chooser.setDefaultOption("Simple Auto", null);
+    //m_limelight.setDefaultCommand(m_turnToTarget);
     m_chooser.addOption("Complex Auto", null);
     SmartDashboard.putData(m_chooser);
     //m_drivebase.setDefaultCommand(m_tankDrive);
@@ -125,9 +116,14 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
+    //new JoystickButton(m_driverController, Button.kRightBumper.value)
+        //.whileTrue(Commands.run() );
+
+
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    m_driverController.rightBumper().whileTrue(m_armAndJoint.retractArm());
+    m_driverController.leftBumper().whileTrue(m_armAndJoint.extendArm());
 
     /*m_driverController.b().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(0, 30));
     m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(1,25));
