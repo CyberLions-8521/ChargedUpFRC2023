@@ -51,7 +51,6 @@ public class RobotContainer {
   private final ArmAndJoint m_armAndJoint = new ArmAndJoint();
   private final JoystickArm m_joystickArm = new JoystickArm(m_armAndJoint);
   private final Drivebase m_drivebase = new Drivebase();
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   private final Limelight m_limelight = new Limelight();
@@ -101,7 +100,6 @@ public class RobotContainer {
     configureBindings();
   }
 
-
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -115,10 +113,6 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    //new JoystickButton(m_driverController, Button.kRightBumper.value)
-        //.whileTrue(Commands.run() );
-
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
