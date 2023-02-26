@@ -5,47 +5,43 @@
 package frc.robot.commands;
 
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Drivebase;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.ArmAndJoint;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class tankDrive extends CommandBase {
+public class JoystickArm extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Drivebase m_db;
+  private final ArmAndJoint m_armAndJoint;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public tankDrive(Drivebase db) {
-    m_db = db;
+  public JoystickArm(ArmAndJoint ArmAndJoint) {
+    m_armAndJoint = ArmAndJoint;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(db);
+    addRequirements(m_armAndJoint);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    //m_db.resetEncoders();
+  public void initialize() {}
+
+  // // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {    
+    m_armAndJoint.move(RobotContainer.m_driverController.getLeftTriggerAxis(), RobotContainer.m_driverController.getRightTriggerAxis());
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  // // Called once the command ends or is interrupted.
   @Override
-  public void execute() {
-    m_db.tankDrive(RobotContainer.m_driverController.getLeftY(), RobotContainer.m_driverController.getRightY());
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    m_db.tankDrive(0, 0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    //return (m_armAndJoint.isLimitSwitchPressed());
     return false;
   }
 }

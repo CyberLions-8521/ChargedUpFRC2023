@@ -6,22 +6,24 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class Forward extends CommandBase {
+public class Balancing extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Drivebase m_db;
-  private final double distance;
+  private final double limit = 0.2;
+  private final PIDController m_pidAngle = new PIDController(0.1, 0, 0);
+  private final PIDController m_pidStraight = new PIDController(0.1, 0, 0);
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Forward(Drivebase db, double inches) {
+  public Balancing(Drivebase db) {
     m_db = db;
-    distance = inches;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(db);
   }
@@ -30,23 +32,25 @@ public class Forward extends CommandBase {
   @Override
   public void initialize() {
     m_db.resetEncoders();
+    m_db.m_gyro.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_db.arcadeDrive(0.5, 0);
+    double outputAngle = -m_pidAngle.calculate(m_db.m_gyro.getPitch(), 0);
+    double outputStraight = -m_pidStraight.calculate(m_db.getHeading(), 0);
+    m_db.arcadeDrive((Math.abs(outputAngle) > limit) ?  limit * Math.signum(outputAngle) : outputAngle, 0);
   }
+
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_db.arcadeDrive(0,0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (m_db.getAverageDistanceInch() > distance);
+    return false;
   }
 }

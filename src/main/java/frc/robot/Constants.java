@@ -48,13 +48,19 @@ public final class Constants {
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int amogus = 0;
   }
 
   public static class MotorControllerIDs{
     public static final int LEFT_MASTER = 3;
     public static final int LEFT_SLAVE = 4;
 
-    public static final int RIGHT_MASTER = 1;
-    public static final int RIGHT_SLAVE = 2;
+    public static final int RIGHT_MASTER = 2;
+    public static final int RIGHT_SLAVE = 1;
+
+    public static final int JOINT_MOTOR1 = 5;
+    public static final int JOINT_MOTOR2 = 6;
+
+    public static final int ARM_MOTOR = 30;
   }
 }
