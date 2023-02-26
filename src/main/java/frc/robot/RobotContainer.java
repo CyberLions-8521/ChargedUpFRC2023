@@ -4,10 +4,16 @@
 
 package frc.robot;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Balancing;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.JoystickArm;
 import frc.robot.subsystems.ArmAndJoint;
+
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.RamseteAutoBuilder;
+import frc.robot.subsystems.Claw;
 //import frc.robot.commands.JoystickArm;
 //import frc.robot.subsystems.ArmAndJoint;
 import frc.robot.subsystems.Drivebase;
@@ -18,23 +24,18 @@ import frc.robot.commands.JoystickDriving;
 import frc.robot.commands.TurnToTarget;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPRamseteCommand;
-
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -48,24 +49,45 @@ public class RobotContainer {
   //The robot's subsystems and commands are defined here...
   //SUBSYSTEMS
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Claw m_claw = new Claw();
   private final ArmAndJoint m_armAndJoint = new ArmAndJoint();
   private final JoystickArm m_joystickArm = new JoystickArm(m_armAndJoint);
   private final Drivebase m_drivebase = new Drivebase();
-  private final SendableChooser<Command> m_chooser = new SendableChooser<>();
-
   private final Limelight m_limelight = new Limelight();
   private final TurnToTarget m_turnToTarget = new TurnToTarget(m_limelight, m_drivebase, "april tag");
-
   public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
-
-  PathPlannerTrajectory examplePath = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-
-  List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("FullAuto", new PathConstraints(4, 3));
+  private final SendableChooser<Command> m_chooser = new SendableChooser<>();
+  PathPlannerTrajectory birb = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  List<PathPlannerTrajectory> BluTopPos2NodesCharge = PathPlanner.loadPathGroup("BluTopPos2NodesCharge", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  List<PathPlannerTrajectory> BluTopPos3Nodes = PathPlanner.loadPathGroup("BluTopPos3Nodes", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  List<PathPlannerTrajectory> RedTopPos2NodesCharge = PathPlanner.loadPathGroup("RedTopPos2NodesCharge", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  List<PathPlannerTrajectory> RedTopPos3Nodes = PathPlanner.loadPathGroup("RedTopPos3Nodes", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  
+  
+  // private Command auto1 = autoDrive.fullAuto(pathGroup);
+  //does PPRamsete command go here lol
+  PIDConstants bruh = new PIDConstants(DriveConstants.kPDriveVel, DriveConstants.kIDriveVel, DriveConstants.kDDriveVel);
   HashMap<String, Command> eventMap = new HashMap<>();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
+  public final static XboxController m_driverController_reg =
+  new XboxController(OperatorConstants.kDriverControllerPort);
   public final static CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
+  RamseteAutoBuilder autoDrive = new RamseteAutoBuilder(
+    m_drivebase::getPose, // Pose supplier
+    m_drivebase::resetOdometry,
+    new RamseteController(),
+    m_drivebase.getKinematics(), // DifferentialDriveKinematics
+    new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts, Constants.DriveConstants.kvVoltSecondsPerMeter, Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
+    m_drivebase::getWheelSpeeds, // DifferentialDriveWheelSpeeds supplier
+    bruh,
+    m_drivebase::tankDriveVolts, // Voltage biconsumer
+    eventMap,
+    true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+    m_drivebase // Requires this drive subsystem
+  );
 
       public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
         return new SequentialCommandGroup(
@@ -90,16 +112,28 @@ public class RobotContainer {
             )
         );
       }
-    
+      
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    eventMap.put("arm_down", m_armAndJoint.PIDArmAndJoint(0, 0));
+    eventMap.put("arm_up", m_armAndJoint.PIDArmAndJoint(0, 0));
+    eventMap.put("balance", new Balancing(m_drivebase));
+    eventMap.put("claw_grab", m_claw.Grab());
+    eventMap.put("claw_drop", m_claw.Release());
+
+    
+
+    
     m_drivebase.setDefaultCommand(m_joystickDriving);
-    m_chooser.setDefaultOption("Simple Auto", null);
+    m_chooser.setDefaultOption("Simple Auto", followTrajectoryCommand(birb, true));
     //m_limelight.setDefaultCommand(m_turnToTarget);
-    m_chooser.addOption("Complex Auto", null);
-    SmartDashboard.putData(m_chooser);
-    //m_drivebase.setDefaultCommand(m_tankDrive);
+    m_chooser.addOption("BluTopPos2NodesCharge",  autoDrive.fullAuto(BluTopPos2NodesCharge));
+    m_chooser.addOption("BluTopPos3Nodes",  autoDrive.fullAuto(BluTopPos3Nodes));
+    m_chooser.addOption("RedTopPos3Nodes",  autoDrive.fullAuto(RedTopPos3Nodes));
+    m_chooser.addOption("RedTopPos2NodesCharge",  autoDrive.fullAuto(RedTopPos2NodesCharge));
+
     m_armAndJoint.setDefaultCommand(m_joystickArm);
+    SmartDashboard.putData(m_chooser);
     configureBindings();
   }
 
@@ -117,16 +151,15 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.rightBumper().whileTrue(m_armAndJoint.retractArm());
-    m_driverController.leftBumper().whileTrue(m_armAndJoint.extendArm());
-
-    /*m_driverController.b().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(0, 30));
-    m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(1,25));
-    m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(4,0));
-    m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(2,-10));*/
-  }
+    // m_driverController.rightBumper().whileTrue(m_armAndJoint.retractArm());
+    // m_driverController.leftBumper().whileTrue(m_armAndJoint.extendArm());
+    // m_driverController.
+    
+    m_driverController.y().whileTrue(m_claw.Grab());
+    m_driverController.b().whileTrue(m_claw.Release());
+    // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(4,0));
+    // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(2,-10));a
+  } //rip rachel
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -134,11 +167,14 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    return m_chooser.getSelected();
     // An example command will be run in autonomous
     //return m_armAndJoint.PIDArmAndJoint(3, 2);
-    return followTrajectoryCommand(examplePath, true);
+   // return followTrajectoryCommand(examplePath, true);
     //return m_chooser.getSelected();
     //return m_autoCommand;
+    // for unit testing 
+    //return new Balancing(m_drivebase)
 
   }
 }

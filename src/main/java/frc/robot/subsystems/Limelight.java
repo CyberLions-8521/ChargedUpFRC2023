@@ -78,6 +78,7 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    getDetectedTarget();
     double x = tx.getDouble(0.0);
     double y = ty.getDouble(0.0);
     double v = tv.getDouble(0.0);
@@ -86,6 +87,7 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("LimelightY", y);
     SmartDashboard.putNumber("LimelightArea", area);
     SmartDashboard.putString("Target", "april tag");
+    SmartDashboard.putBoolean("Target detected", getDetectedTarget());
   }
 
   @Override
