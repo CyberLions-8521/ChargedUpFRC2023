@@ -60,6 +60,9 @@ public class RobotContainer {
 
   PathPlannerTrajectory examplePath = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
 
+  List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("FullAuto", new PathConstraints(4, 3));
+  HashMap<String, Command> eventMap = new HashMap<>();
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public final static CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);

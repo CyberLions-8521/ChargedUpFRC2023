@@ -22,11 +22,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmAndJoint extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  private final CANSparkMax m_jointMotor1 = new CANSparkMax(5, MotorType.kBrushless);
-  private final CANSparkMax m_jointMotor2 = new CANSparkMax(6, MotorType.kBrushless);
+  private final CANSparkMax m_jointMotor1 = new CANSparkMax(Constants.MotorControllerIDs.JOINT_MOTOR1, MotorType.kBrushless);
+  private final CANSparkMax m_jointMotor2 = new CANSparkMax(Constants.MotorControllerIDs.JOINT_MOTOR2, MotorType.kBrushless);
 
   //private final SparkMaxLimitSwitch m_limitSwitch = m_jointMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-  public final CANSparkMax m_armMotor = new CANSparkMax(30, MotorType.kBrushless);
+  public final CANSparkMax m_armMotor = new CANSparkMax(Constants.MotorControllerIDs.ARM_MOTOR, MotorType.kBrushless);
 
   public final MotorControllerGroup m_jointGroup = new MotorControllerGroup(m_jointMotor1, m_jointMotor2);
 

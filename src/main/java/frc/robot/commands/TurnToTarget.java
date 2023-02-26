@@ -15,7 +15,7 @@ public class TurnToTarget extends CommandBase {
   private final Limelight m_limelight;
   private final Drivebase m_drivebase;
   private final String target;
-  private int pipelineNum = 0;
+  private int pipelineNum = 1;
 
   private final PIDController m_pid = new PIDController(0.1, 0, 0);
 

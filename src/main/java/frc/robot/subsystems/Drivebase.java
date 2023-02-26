@@ -15,11 +15,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import com.kauailabs.navx.frc.AHRS;
-import com.revrobotics.SparkMaxAlternateEncoder.Type;
+import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,8 +36,8 @@ public class Drivebase extends SubsystemBase {
   private final CANSparkMax m_rightMaster = new CANSparkMax(Constants.MotorControllerIDs.RIGHT_MASTER, MotorType.kBrushless);
   private final CANSparkMax m_rightSlave = new CANSparkMax(Constants.MotorControllerIDs.RIGHT_SLAVE, MotorType.kBrushless);
 
-  private final RelativeEncoder m_rightEncoder = m_rightSlave.getEncoder();
-  private final RelativeEncoder m_leftEncoder = m_leftMaster.getEncoder();
+  private final CANCoder m_leftEncoder = new CANCoder(8);
+  private final CANCoder m_rightEncoder = new CANCoder(9);
 
   private final SlewRateLimiter m_rateLimiter = new SlewRateLimiter(0.5);
 
@@ -79,7 +78,7 @@ public class Drivebase extends SubsystemBase {
 
   public void arcadeDrive(double xSpeed, double zSpeed){
     //m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed), zSpeed * 0.5);
-    m_diffDrive.arcadeDrive(xSpeed * 0.75, zSpeed * 0.75);
+    m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed * 0.75), zSpeed * 0.75);
   }
 
   /**
@@ -165,7 +164,7 @@ public class Drivebase extends SubsystemBase {
       m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch());
     m_field.setRobotPose(m_odometry.getPoseMeters());
     SmartDashboard.putNumber("rotations of left", m_leftEncoder.getPosition());
-    SmartDashboard.putNumber("rate of left", Math.abs(m_leftEncoder.getVelocity()));
+    SmartDashboard.putNumber("rate of left", m_leftEncoder.getVelocity());
     SmartDashboard.putNumber("rotations of right", m_rightEncoder.getPosition());
     SmartDashboard.putNumber("rate of right", m_rightEncoder.getVelocity());
   } 
