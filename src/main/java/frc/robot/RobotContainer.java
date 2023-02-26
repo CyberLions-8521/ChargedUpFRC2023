@@ -126,12 +126,10 @@ public class RobotContainer {
     
     m_drivebase.setDefaultCommand(m_joystickDriving);
     m_chooser.setDefaultOption("Simple Auto", followTrajectoryCommand(birb, true));
-    //m_limelight.setDefaultCommand(m_turnToTarget);
     m_chooser.addOption("BluTopPos2NodesCharge",  autoDrive.fullAuto(BluTopPos2NodesCharge));
     m_chooser.addOption("BluTopPos3Nodes",  autoDrive.fullAuto(BluTopPos3Nodes));
     m_chooser.addOption("RedTopPos3Nodes",  autoDrive.fullAuto(RedTopPos3Nodes));
     m_chooser.addOption("RedTopPos2NodesCharge",  autoDrive.fullAuto(RedTopPos2NodesCharge));
-
     m_armAndJoint.setDefaultCommand(m_joystickArm);
     SmartDashboard.putData(m_chooser);
     configureBindings();

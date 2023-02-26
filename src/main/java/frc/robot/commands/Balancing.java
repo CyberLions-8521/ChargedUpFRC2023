@@ -40,7 +40,7 @@ public class Balancing extends CommandBase {
   public void execute() {
     double outputAngle = -m_pidAngle.calculate(m_db.m_gyro.getPitch(), 0);
     double outputStraight = -m_pidStraight.calculate(m_db.getHeading(), 0);
-    m_db.arcadeDrive((Math.abs(outputAngle) > limit) ?  limit * Math.signum(outputAngle) : outputAngle, 0);
+    m_db.arcadeDrive((Math.abs(outputAngle) > limit) ?  limit * Math.signum(outputAngle) : outputAngle, outputStraight);
   }
 
 

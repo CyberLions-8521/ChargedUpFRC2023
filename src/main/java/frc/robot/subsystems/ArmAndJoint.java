@@ -6,11 +6,12 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
-
+import com.revrobotics.AbsoluteEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,14 +28,14 @@ public class ArmAndJoint extends SubsystemBase {
 
   //private final SparkMaxLimitSwitch m_limitSwitch = m_jointMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
   public final CANSparkMax m_armMotor = new CANSparkMax(Constants.MotorControllerIDs.ARM_MOTOR, MotorType.kBrushless);
-
+  public final AbsoluteEncoder m_jointEncoder = m_jointMotor2.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
   public final MotorControllerGroup m_jointGroup = new MotorControllerGroup(m_jointMotor1, m_jointMotor2);
 
-  //private final RelativeEncoder m_jointEncoder = m_jointMotor.getAlternateEncoder(Type.kQuadrature, 8192);
+  private final RelativeEncoder m_ArmEncoder = m_armMotor.getEncoder();
   //private final AnalogPotentiometer m_armPotentiometer = new AnalogPotentiometer(0, 933, -30);
 
-  private final PIDController m_PID1 = new PIDController(0.1, 0, 0);
-  private final PIDController m_PID2 = new PIDController(0.1, 0, 0);
+  private final PIDController m_PIDArm = new PIDController(0.1, 0, 0);
+  private final PIDController m_PIDJoint = new PIDController(0.1, 0, 0);
 
 
   public ArmAndJoint() {
@@ -71,7 +72,6 @@ public class ArmAndJoint extends SubsystemBase {
       });
   }
 
-/* 
   public CommandBase PIDArmAndJoint(double SPx, double SPy){
     return run(
       () -> {
@@ -79,7 +79,7 @@ public class ArmAndJoint extends SubsystemBase {
         armExtrusionToSetpoint(SPx, SPy);
       }
     );
-  }*/
+  }
 
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
@@ -95,10 +95,17 @@ public class ArmAndJoint extends SubsystemBase {
     return m_limitSwitch.isPressed();
   }*/
 
-  public void move(double leftTrigger, double rightTrigger){
+  public void move(double leftTrigger, double rightTrigger, boolean right, boolean left){
     m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.009);
+    if(right) {
+      m_armMotor.set(0.25);
+    } else if(left) {
+      m_armMotor.set(-0.25);
+    } else {
+      m_armMotor.set(0);
+    }
   }
-/* 
+
   public double getCurrentAngle(){
     double revolutions = m_jointEncoder.getPosition();
     double angle = (360*revolutions);
@@ -106,10 +113,9 @@ public class ArmAndJoint extends SubsystemBase {
   }
 
   public double getR2Length(){
-    return m_armPotentiometer.get();
-    //final double m = 0;
-    //final double b = 0;
-    //(m * m_jointEncoder.getPosition() + b);
+    final double m = 0;
+    final double b = 0;
+    return m * m_jointEncoder.getPosition() + b;
   }
 
   public double getR3Length(){
@@ -121,39 +127,28 @@ public class ArmAndJoint extends SubsystemBase {
   }
 
   public void moveToAngleSetpoint(double SPx, double SPy){
-    double output = m_PID1.calculate(getCurrentAngle(), getAngleToSetpoint(SPx, SPy));
-    m_jointMotor.set(output);
+    double output = m_PIDJoint.calculate(getCurrentAngle(), getAngleToSetpoint(SPx, SPy));
+    m_jointGroup.set(output);
 
     SmartDashboard.putNumber("Angle Distance to Setpoint", getAngleToSetpoint(SPx, SPy));
   }
 
   public void moveToAngleSetpointBigK(double SPx, double SPy){
     double setpoint = getAngleToSetpoint(SPx, SPy);
-    double magDif = Math.abs(getCurrentAngle()-setpoint);
-    if(magDif < 10 ){
-        m_PID1.setPID(0, 0, 0);
-    } else if (magDif < 30){
-        m_PID1.setPID(0, 0, 0);
-    } else if (magDif < 90){
-        m_PID1.setPID(0, 0, 0);
-    } else {
-        m_PID1.setPID(0, 0, 0);
-    } 
-    double output = m_PID1.calculate(getCurrentAngle(), setpoint);
-    m_jointMotor.set(output);
-    SmartDashboard.putNumber("Angle Distance to Setpoint", setpoint);
+    double output = m_PIDJoint.calculate(getCurrentAngle(), setpoint);
+    m_jointGroup.set(output);
   }
 
   public void armExtrusionToSetpoint(double SPx, double SPy){
     double distanceToSetpoint = distanceFormula(0, SPx, SPy, Constants.ElevatorConstants.height);
-    double output = m_PID2.calculate(getR3Length(), distanceToSetpoint);
+    double output = m_PIDArm.calculate(getR3Length(), distanceToSetpoint);
     m_armMotor.set(output);
     SmartDashboard.putNumber("Arm length to Setpoint", distanceToSetpoint);
   }
 
   public double getAngleToSetpoint(double SPx, double SPy){
     return (Math.toDegrees(Math.atan(SPy/SPx)));
-  }*/
+  }
 
   @Override
   public void periodic() {
