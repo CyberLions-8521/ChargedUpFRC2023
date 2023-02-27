@@ -61,6 +61,6 @@ public final class Constants {
     public static final int JOINT_MOTOR1 = 5;
     public static final int JOINT_MOTOR2 = 6;
 
-    public static final int ARM_MOTOR = 30;
+    public static final int ARM_MOTOR = 7;
   }
 }

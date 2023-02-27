@@ -108,11 +108,18 @@ public class Drivebase extends SubsystemBase {
     m_rightEncoder.setPosition(0);
   }
 
-  public void resetOdometry(Pose2d pose) {
-    resetEncoders();
+  // public Pose2d resetPose2d(Pose2d newPose){
+  //   m_odometry.resetPosition(
+  //       m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch(), newPose);     
+  //   return getPose();
+  //  }
+
+
+  public void resetOdometry(Pose2d rachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachel) {
     m_odometry.resetPosition(
-        m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch(), pose);
+        m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch(), rachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachelrachel);
   }
+
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return m_diffDriveWheelSpeeds;
@@ -155,6 +162,10 @@ public class Drivebase extends SubsystemBase {
 
   public double getTurnRate() {
     return -m_gyro.getRate();
+  }
+
+  public DifferentialDriveOdometry getOdometry(){
+    return m_odometry;
   }
   
   @Override
