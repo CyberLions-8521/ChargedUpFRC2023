@@ -96,7 +96,7 @@ public class ArmAndJoint extends SubsystemBase {
   }*/
 
   public void move(double leftTrigger, double rightTrigger, boolean right, boolean left){
-    m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.009);
+    m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.02);
     if(right) {
       m_armMotor.set(0.25);
     } else if(left) {
@@ -152,9 +152,10 @@ public class ArmAndJoint extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Raw Joint Value", m_jointEncoder.getPosition());
     // This method will be called once per scheduler run
-    //SmartDashboard.putNumber("Angle of Joint", getCurrentAngle());
-    //SmartDashboard.putNumber("R2 Length", getR2Length());
+    SmartDashboard.putNumber("Angle of Joint", getCurrentAngle());
+    SmartDashboard.putNumber("R2 Length", getR2Length());
   }
 
   @Override

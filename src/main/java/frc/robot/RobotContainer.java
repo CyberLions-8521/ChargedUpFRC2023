@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.JoystickDriving;
 import frc.robot.commands.TurnToTarget;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +55,7 @@ public class RobotContainer {
   private final JoystickArm m_joystickArm = new JoystickArm(m_armAndJoint);
   private final Drivebase m_drivebase = new Drivebase();
   private final Limelight m_limelight = new Limelight();
+  private final Balancing m_balance = new Balancing(m_drivebase);
   private final TurnToTarget m_turnToTarget = new TurnToTarget(m_limelight, m_drivebase, "april tag");
   public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -115,23 +117,23 @@ public class RobotContainer {
       
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    eventMap.put("arm_down", m_armAndJoint.PIDArmAndJoint(0, 0));
-    eventMap.put("arm_up", m_armAndJoint.PIDArmAndJoint(0, 0));
-    eventMap.put("balance", new Balancing(m_drivebase));
-    eventMap.put("claw_grab", m_claw.Grab());
-    eventMap.put("claw_drop", m_claw.Release());
+    // eventMap.put("arm_down", m_armAndJoint.PIDArmAndJoint(0, 0));
+    // eventMap.put("arm_up", m_armAndJoint.PIDArmAndJoint(0, 0));
+    // eventMap.put("balance", new Balancing(m_drivebase));
+    // eventMap.put("claw_grab", m_claw.Grab());
+    // eventMap.put("claw_drop", m_claw.Release());
 
     
 
     
     m_drivebase.setDefaultCommand(m_joystickDriving);
-    m_chooser.setDefaultOption("Simple Auto", followTrajectoryCommand(birb, true));
-    m_chooser.addOption("BluTopPos2NodesCharge",  autoDrive.fullAuto(BluTopPos2NodesCharge));
-    m_chooser.addOption("BluTopPos3Nodes",  autoDrive.fullAuto(BluTopPos3Nodes));
-    m_chooser.addOption("RedTopPos3Nodes",  autoDrive.fullAuto(RedTopPos3Nodes));
-    m_chooser.addOption("RedTopPos2NodesCharge",  autoDrive.fullAuto(RedTopPos2NodesCharge));
+    // m_chooser.setDefaultOption("Simple Auto", followTrajectoryCommand(birb, true));
+    // m_chooser.addOption("BluTopPos2NodesCharge",  autoDrive.fullAuto(BluTopPos2NodesCharge));
+    // m_chooser.addOption("BluTopPos3Nodes",  autoDrive.fullAuto(BluTopPos3Nodes));
+    // m_chooser.addOption("RedTopPos3Nodes",  autoDrive.fullAuto(RedTopPos3Nodes));
+    // m_chooser.addOption("RedTopPos2NodesCharge",  autoDrive.fullAuto(RedTopPos2NodesCharge));
     m_armAndJoint.setDefaultCommand(m_joystickArm);
-    SmartDashboard.putData(m_chooser);
+    // SmartDashboard.putData(m_chooser);
     configureBindings();
   }
 
@@ -149,15 +151,20 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // m_driverController.rightBumper().whileTrue(m_armAndJoint.retractArm());
-    // m_driverController.leftBumper().whileTrue(m_armAndJoint.extendArm());
+    //m_driverController.rightBumper().whileTrue(m_armAndJoint.retractArm());
+    //m_driverController.leftBumper().whileTrue(m_armAndJoint.extendArm());
     // m_driverController.
     
-    m_driverController.y().whileTrue(m_claw.Grab());
-    m_driverController.b().whileTrue(m_claw.Release());
+   m_driverController.y().whileTrue(m_claw.Grab());
+   m_driverController.b().whileTrue(m_claw.Release());
+
+   SmartDashboard.putData("balance code", m_balance.withTimeout(9));
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(4,0));
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(2,-10));a
-  } //rip rachel
+
+ } //rip rachel
+
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -165,7 +172,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_chooser.getSelected();
+    return null;
+    // return m_chooser.getSelected();
     // An example command will be run in autonomous
     //return m_armAndJoint.PIDArmAndJoint(3, 2);
    // return followTrajectoryCommand(examplePath, true);

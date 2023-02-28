@@ -6,7 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -14,9 +14,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Claw extends SubsystemBase {
   /** Creates a new Arm. */
-  public Claw() {}
+  public Claw() {
+    m_doubleSolenoid.set(Value.kForward);
+    comp.enableDigital();
+  }
 
   //Type can eiher be REVPH or CTREPCM
+  Compressor comp = new Compressor(PneumaticsModuleType.CTREPCM);
   DoubleSolenoid m_doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 6, 7);
 
   /**
@@ -33,7 +37,7 @@ public class Claw extends SubsystemBase {
         });
   }
   public CommandBase Grab() {
-    return run(
+    return runOnce(
         () -> {
           m_doubleSolenoid.set(Value.kForward);
 
@@ -41,13 +45,13 @@ public class Claw extends SubsystemBase {
         });
   }
   public CommandBase Release() {
-    return run(
+    return runOnce(
         () -> {
           m_doubleSolenoid.set(Value.kReverse);
         });
   }
   public CommandBase setOff() {
-    return run(
+    return runOnce(
         () -> {
           m_doubleSolenoid.set(Value.kOff);
         });

@@ -39,7 +39,7 @@ public class Drivebase extends SubsystemBase {
   private final CANCoder m_leftEncoder = new CANCoder(8);
   private final CANCoder m_rightEncoder = new CANCoder(9);
 
-  private final SlewRateLimiter m_rateLimiter = new SlewRateLimiter(0.5);
+  private final SlewRateLimiter m_rateLimiter = new SlewRateLimiter(0.8);
 
   public final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftMaster, m_leftSlave);
   public final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightMaster, m_rightSlave);
@@ -167,6 +167,8 @@ public class Drivebase extends SubsystemBase {
     SmartDashboard.putNumber("rate of left", m_leftEncoder.getVelocity());
     SmartDashboard.putNumber("rotations of right", m_rightEncoder.getPosition());
     SmartDashboard.putNumber("rate of right", m_rightEncoder.getVelocity());
+    SmartDashboard.putNumber("Angle Y", m_gyro.getRoll());
+    SmartDashboard.putNumber("Get Angle", m_gyro.getAngle());
   } 
 
   @Override
@@ -174,3 +176,4 @@ public class Drivebase extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 }
+ 
