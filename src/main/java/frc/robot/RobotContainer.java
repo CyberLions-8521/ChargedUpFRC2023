@@ -67,7 +67,6 @@ public class RobotContainer {
   
   
   // private Command auto1 = autoDrive.fullAuto(pathGroup);
-  //does PPRamsete command go here lol
   PIDConstants bruh = new PIDConstants(DriveConstants.kPDriveVel, DriveConstants.kIDriveVel, DriveConstants.kDDriveVel);
   HashMap<String, Command> eventMap = new HashMap<>();
 
@@ -122,10 +121,6 @@ public class RobotContainer {
     // eventMap.put("balance", new Balancing(m_drivebase));
     // eventMap.put("claw_grab", m_claw.Grab());
     // eventMap.put("claw_drop", m_claw.Release());
-
-    
-
-    
     m_drivebase.setDefaultCommand(m_joystickDriving);
     // m_chooser.setDefaultOption("Simple Auto", followTrajectoryCommand(birb, true));
     // m_chooser.addOption("BluTopPos2NodesCharge",  autoDrive.fullAuto(BluTopPos2NodesCharge));
@@ -162,10 +157,7 @@ public class RobotContainer {
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(4,0));
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(2,-10));a
 
- } //rip rachel
-
-
-
+ }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
