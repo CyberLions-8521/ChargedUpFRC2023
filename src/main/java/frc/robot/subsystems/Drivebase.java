@@ -28,7 +28,7 @@ public class Drivebase extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   private Field2d m_field = new Field2d();
   public DifferentialDriveKinematics m_kinematics = Constants.DriveConstants.kDriveKinematics;
-  private final DifferentialDriveOdometry m_odometry;
+  //private final DifferentialDriveOdometry m_odometry;
 
   private final CANSparkMax m_leftMaster = new CANSparkMax(Constants.MotorControllerIDs.LEFT_MASTER, MotorType.kBrushless);
   private final CANSparkMax m_leftSlave = new CANSparkMax(Constants.MotorControllerIDs.LEFT_SLAVE, MotorType.kBrushless);
@@ -36,15 +36,15 @@ public class Drivebase extends SubsystemBase {
   private final CANSparkMax m_rightMaster = new CANSparkMax(Constants.MotorControllerIDs.RIGHT_MASTER, MotorType.kBrushless);
   private final CANSparkMax m_rightSlave = new CANSparkMax(Constants.MotorControllerIDs.RIGHT_SLAVE, MotorType.kBrushless);
 
-  private final CANCoder m_leftEncoder = new CANCoder(8);
-  private final CANCoder m_rightEncoder = new CANCoder(9);
+  //private final CANCoder m_leftEncoder = new CANCoder(8);
+  //private final CANCoder m_rightEncoder = new CANCoder(9);
 
   private final SlewRateLimiter m_rateLimiter = new SlewRateLimiter(0.8);
 
   public final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftMaster, m_leftSlave);
   public final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightMaster, m_rightSlave);
 
-  public final DifferentialDriveWheelSpeeds m_diffDriveWheelSpeeds = new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(), m_rightEncoder.getVelocity());
+  //public final DifferentialDriveWheelSpeeds m_diffDriveWheelSpeeds = new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(), m_rightEncoder.getVelocity());
 
   private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftGroup, m_rightGroup);
 
@@ -53,13 +53,13 @@ public class Drivebase extends SubsystemBase {
   public Drivebase() {
     m_rightGroup.setInverted(false);
     m_gyro.reset();
-    resetEncoders();
+    //resetEncoders();
 
     // parameters
     //angle, distance measured by left encoder, distance measured by right encoder
-    m_odometry =
-    new DifferentialDriveOdometry(
-        m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch());
+    // m_odometry =
+    // new DifferentialDriveOdometry(
+    //     m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch());
   }
 
   /**
@@ -91,25 +91,25 @@ public class Drivebase extends SubsystemBase {
     return false;
   }
 
-  public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
-  }
+  // public Pose2d getPose() {
+  //   return m_odometry.getPoseMeters();
+  // }
 
-  public DifferentialDriveKinematics getKinematics(){
-    return m_kinematics;
-  }
+  // public DifferentialDriveKinematics getKinematics(){
+  //   return m_kinematics;
+  // }
 
-  public double getWheelVelocity(){
-    return m_diffDriveWheelSpeeds.leftMetersPerSecond;
-  }
+  // public double getWheelVelocity(){
+  //   return m_diffDriveWheelSpeeds.leftMetersPerSecond;
+  // }
  
-  public void resetEncoders() {
-    m_leftEncoder.setPosition(0);
-    m_rightEncoder.setPosition(0);
-  }
-
+  // public void resetEncoders() {
+  //   m_leftEncoder.setPosition(0);
+  //   m_rightEncoder.setPosition(0);
+  // }
+/* 
   public void resetOdometry(Pose2d pose) {
-    resetEncoders();
+    //resetEncoders();
     m_odometry.resetPosition(
         m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch(), pose);
   }
@@ -118,13 +118,13 @@ public class Drivebase extends SubsystemBase {
     return m_diffDriveWheelSpeeds;
   }
 
-  public double getLeftDistanceInch() {
-    return (m_leftEncoder.getPosition() * Math.PI * Constants.DriveConstants.kWheelDiameter);
-  }
+  // public double getLeftDistanceInch() {
+  //   return (m_leftEncoder.getPosition() * Math.PI * Constants.DriveConstants.kWheelDiameter);
+  // }
 
-  public double getRightDistanceInch() {
-    return (m_rightEncoder.getPosition() * Math.PI * Constants.DriveConstants.kWheelDiameter);
-  }
+  // public double getRightDistanceInch() {
+  //   return (m_rightEncoder.getPosition() * Math.PI * Constants.DriveConstants.kWheelDiameter);
+  // }
 
   public double getAverageDistanceInch(){
     return ((getLeftDistanceInch() + getRightDistanceInch()) / 2);
@@ -156,19 +156,19 @@ public class Drivebase extends SubsystemBase {
   public double getTurnRate() {
     return -m_gyro.getRate();
   }
-  
+  */
   @Override
   public void periodic() {
     //This method will be called once per scheduler run
-    m_odometry.update(
-      m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch());
-    m_field.setRobotPose(m_odometry.getPoseMeters());
-    SmartDashboard.putNumber("rotations of left", m_leftEncoder.getPosition());
-    SmartDashboard.putNumber("rate of left", m_leftEncoder.getVelocity());
-    SmartDashboard.putNumber("rotations of right", m_rightEncoder.getPosition());
-    SmartDashboard.putNumber("rate of right", m_rightEncoder.getVelocity());
-    SmartDashboard.putNumber("Angle Y", m_gyro.getRoll());
-    SmartDashboard.putNumber("Get Angle", m_gyro.getAngle());
+    // m_odometry.update(
+    //   m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch());
+    // m_field.setRobotPose(m_odometry.getPoseMeters());
+    // SmartDashboard.putNumber("rotations of left", m_leftEncoder.getPosition());
+    // SmartDashboard.putNumber("rate of left", m_leftEncoder.getVelocity());
+    // SmartDashboard.putNumber("rotations of right", m_rightEncoder.getPosition());
+    // SmartDashboard.putNumber("rate of right", m_rightEncoder.getVelocity());
+    // SmartDashboard.putNumber("Angle Y", m_gyro.getRoll());
+    // SmartDashboard.putNumber("Get Angle", m_gyro.getAngle());
   } 
 
   @Override

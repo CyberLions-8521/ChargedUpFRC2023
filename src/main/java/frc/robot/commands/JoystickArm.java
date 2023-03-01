@@ -31,10 +31,8 @@ public class JoystickArm extends CommandBase {
   // // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {    
-    m_armAndJoint.move(RobotContainer.m_driverController_reg.getLeftTriggerAxis(), 
-    RobotContainer.m_driverController_reg.getRightTriggerAxis(),
-    RobotContainer.m_driverController_reg.getRightBumper(),
-    RobotContainer.m_driverController_reg.getLeftBumper());
+    m_armAndJoint.move(RobotContainer.m_driverController.getLeftTriggerAxis(), 
+    RobotContainer.m_driverController.getRightTriggerAxis());
   }
 
   // // Called once the command ends or is interrupted.

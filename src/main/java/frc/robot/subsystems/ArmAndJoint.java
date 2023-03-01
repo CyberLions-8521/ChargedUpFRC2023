@@ -95,15 +95,15 @@ public class ArmAndJoint extends SubsystemBase {
     return m_limitSwitch.isPressed();
   }*/
 
-  public void move(double leftTrigger, double rightTrigger, boolean right, boolean left){
+  public void move(double leftTrigger, double rightTrigger){
     m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.02);
-    if(right) {
-      m_armMotor.set(0.25);
-    } else if(left) {
-      m_armMotor.set(-0.25);
-    } else {
-      m_armMotor.set(0);
-    }
+    // if(right) {
+    //   m_armMotor.set(0.25);
+    // } else if(left) {
+    //   m_armMotor.set(-0.25);
+    // } else {
+    //   m_armMotor.set(0);
+    // }
   }
 
   public double getCurrentAngle(){

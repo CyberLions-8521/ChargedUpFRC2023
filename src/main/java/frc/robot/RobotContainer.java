@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Balancing;
+//import frc.robot.commands.Balancing;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.JoystickArm;
 import frc.robot.subsystems.ArmAndJoint;
@@ -55,7 +55,7 @@ public class RobotContainer {
   private final JoystickArm m_joystickArm = new JoystickArm(m_armAndJoint);
   private final Drivebase m_drivebase = new Drivebase();
   private final Limelight m_limelight = new Limelight();
-  private final Balancing m_balance = new Balancing(m_drivebase);
+  //private final Balancing m_balance = new Balancing(m_drivebase);
   private final TurnToTarget m_turnToTarget = new TurnToTarget(m_limelight, m_drivebase, "april tag");
   public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -71,11 +71,11 @@ public class RobotContainer {
   HashMap<String, Command> eventMap = new HashMap<>();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  public final static XboxController m_driverController_reg =
-  new XboxController(OperatorConstants.kDriverControllerPort);
+  //public final static XboxController m_driverController_reg =
+  //new XboxController(OperatorConstants.kDriverControllerPort);
   public final static CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
+      new CommandXboxController(1);
+/* 
   RamseteAutoBuilder autoDrive = new RamseteAutoBuilder(
     m_drivebase::getPose, // Pose supplier
     m_drivebase::resetOdometry,
@@ -113,7 +113,7 @@ public class RobotContainer {
             )
         );
       }
-      
+      */
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // eventMap.put("arm_down", m_armAndJoint.PIDArmAndJoint(0, 0));
@@ -153,7 +153,7 @@ public class RobotContainer {
    m_driverController.y().whileTrue(m_claw.Grab());
    m_driverController.b().whileTrue(m_claw.Release());
 
-   SmartDashboard.putData("balance code", m_balance.withTimeout(9));
+   //SmartDashboard.putData("balance code", m_balance.withTimeout(9));
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(4,0));
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(2,-10));a
 
