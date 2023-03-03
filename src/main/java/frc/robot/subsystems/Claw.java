@@ -40,8 +40,6 @@ public class Claw extends SubsystemBase {
     return runOnce(
         () -> {
           m_doubleSolenoid.set(Value.kForward);
-
-          
         });
   }
   public CommandBase Release() {

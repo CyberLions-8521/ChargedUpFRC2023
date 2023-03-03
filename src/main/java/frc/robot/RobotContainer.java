@@ -67,6 +67,7 @@ public class RobotContainer {
   
   
   // private Command auto1 = autoDrive.fullAuto(pathGroup);
+  PathPlannerTrajectory examplePath = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
   PIDConstants bruh = new PIDConstants(DriveConstants.kPDriveVel, DriveConstants.kIDriveVel, DriveConstants.kDDriveVel);
   HashMap<String, Command> eventMap = new HashMap<>();
 
@@ -88,7 +89,7 @@ public class RobotContainer {
     eventMap,
     true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
     m_drivebase // Requires this drive subsystem
-  );
+  );*/
 
       public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
         return new SequentialCommandGroup(
@@ -113,7 +114,7 @@ public class RobotContainer {
             )
         );
       }
-      */
+      
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // eventMap.put("arm_down", m_armAndJoint.PIDArmAndJoint(0, 0));
@@ -152,6 +153,7 @@ public class RobotContainer {
     
    m_driverController.y().whileTrue(m_claw.Grab());
    m_driverController.b().whileTrue(m_claw.Release());
+   m_driverController.x().onTrue(m_armAndJoint.dog(45));
 
    //SmartDashboard.putData("balance code", m_balance.withTimeout(9));
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(4,0));
@@ -164,11 +166,11 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    //return null;
     // return m_chooser.getSelected();
     // An example command will be run in autonomous
     //return m_armAndJoint.PIDArmAndJoint(3, 2);
-   // return followTrajectoryCommand(examplePath, true);
+    return followTrajectoryCommand(examplePath, true);
     //return m_chooser.getSelected();
     //return m_autoCommand;
     // for unit testing 

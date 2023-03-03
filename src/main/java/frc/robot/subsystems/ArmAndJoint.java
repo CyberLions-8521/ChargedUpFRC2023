@@ -81,6 +81,14 @@ public class ArmAndJoint extends SubsystemBase {
     );
   }
 
+  public CommandBase dog(double setpoint){
+    return run(
+      () -> {
+        moveToAngleSetpointRACHEL(setpoint);
+      }
+    );
+  }
+
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
    *
@@ -97,6 +105,7 @@ public class ArmAndJoint extends SubsystemBase {
 
   public void move(double leftTrigger, double rightTrigger){
     m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.02);
+    //m_armMotor.set(-leftTrigger * 0.25);
     // if(right) {
     //   m_armMotor.set(0.25);
     // } else if(left) {
@@ -108,7 +117,10 @@ public class ArmAndJoint extends SubsystemBase {
 
   public double getCurrentAngle(){
     double revolutions = m_jointEncoder.getPosition();
-    double angle = (360*revolutions);
+    double angle = 0;
+    if (angle < 360){
+      angle = (360*revolutions);
+    }
     return angle;
   }
 
@@ -136,6 +148,11 @@ public class ArmAndJoint extends SubsystemBase {
   public void moveToAngleSetpointBigK(double SPx, double SPy){
     double setpoint = getAngleToSetpoint(SPx, SPy);
     double output = m_PIDJoint.calculate(getCurrentAngle(), setpoint);
+    m_jointGroup.set(output);
+  }
+
+  public void moveToAngleSetpointRACHEL(double wantedAngle){
+    double output = m_PIDJoint.calculate(getCurrentAngle(), wantedAngle);
     m_jointGroup.set(output);
   }
 

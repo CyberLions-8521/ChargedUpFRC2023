@@ -33,6 +33,8 @@ public class JoystickArm extends CommandBase {
   public void execute() {    
     m_armAndJoint.move(RobotContainer.m_driverController.getLeftTriggerAxis(), 
     RobotContainer.m_driverController.getRightTriggerAxis());
+    m_armAndJoint.retractArm();
+    
   }
 
   // // Called once the command ends or is interrupted.
