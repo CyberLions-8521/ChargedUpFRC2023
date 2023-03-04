@@ -132,6 +132,7 @@ public class Drivebase extends SubsystemBase {
   public double getRightDistanceInch() {
     return (m_rightEncoder.getPosition() * Math.PI * Constants.DriveConstants.kWheelDiameter);
   }
+  //hi
 
   public double getAverageDistanceInch(){
     return ((getLeftDistanceInch() + getRightDistanceInch()) / 2);
