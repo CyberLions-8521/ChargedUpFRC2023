@@ -17,7 +17,7 @@ public class TurnToTarget extends CommandBase {
   private final String target;
   private int pipelineNum = 1;
 
-  private final PIDController m_pid = new PIDController(0.1, 0, 0);
+  private final PIDController m_pid = new PIDController(0.01, 0.0001, 0.015);
 
   /**
    * Creates a new ExampleCommand.
@@ -37,25 +37,27 @@ public class TurnToTarget extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    switch(target){
-      case "april tag":
-        pipelineNum = 1;
-        break;
-      case "cone":
-        pipelineNum = 2;
-        break;
-      case "cube":
-        pipelineNum = 3;
-        break;
-    }
+    // switch(target){
+    //   case "april tag":
+    //     pipelineNum = 0;
+    //     break;
+    //   case "cone":
+    //     pipelineNum = 1;
+    //     break;
+    //   case "cube":
+    //     pipelineNum = 2;
+    //     break;
+    //   default:
+    //     pipelineNum = 0;
+    // }
+    //m_limelight.setPipeline();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_limelight.setPipeline(pipelineNum);
     double output = m_pid.calculate(m_limelight.getTx(), 0);
-    m_drivebase.arcadeDrive(0,output);
+    m_drivebase.arcadeDriveWithoutLimit(0,output);
   }
 
   // Called once the command ends or is interrupted.

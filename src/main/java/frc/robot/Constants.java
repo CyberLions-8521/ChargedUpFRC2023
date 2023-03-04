@@ -22,10 +22,9 @@ public final class Constants {
   }
 
   public static final class DriveConstants{
-    public static final double kTrackwidthMeters = Units.inchesToMeters(24);
-    public static final double kWheelDiameter = Units.inchesToMeters(6);
+    public static final double kTrackwidthMeters = 0.6096;
+    public static final double kWheelDiameter = 0.1524;
 
-    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
     
     public static final double ksVolts = 0.13302;
     public static final double kvVoltSecondsPerMeter = 2.8449;

@@ -23,11 +23,12 @@ import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class Drivebase extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   private Field2d m_field = new Field2d();
-  public DifferentialDriveKinematics m_kinematics = Constants.DriveConstants.kDriveKinematics;
+  public DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(Constants.DriveConstants.kTrackwidthMeters);
   private final DifferentialDriveOdometry m_odometry;
 
   private final CANSparkMax m_leftMaster = new CANSparkMax(Constants.MotorControllerIDs.LEFT_MASTER, MotorType.kBrushless);
@@ -49,6 +50,8 @@ public class Drivebase extends SubsystemBase {
   private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftGroup, m_rightGroup);
 
   public final AHRS m_gyro = new AHRS(Port.kMXP);
+
+  public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(Constants.DriveConstants.kTrackwidthMeters);
 
   public Drivebase() {
     m_rightGroup.setInverted(false);
@@ -79,6 +82,11 @@ public class Drivebase extends SubsystemBase {
     m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed * 0.75), zSpeed * 0.75);
   }
 
+  public void arcadeDriveWithoutLimit(double xSpeed, double zSpeed){
+    //m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed), zSpeed * 0.5);
+    m_diffDrive.arcadeDrive(xSpeed, zSpeed);
+  }
+
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
    *
@@ -94,7 +102,7 @@ public class Drivebase extends SubsystemBase {
   }
 
   public DifferentialDriveKinematics getKinematics(){
-    return m_kinematics;
+    return kDriveKinematics;
   }
 
   public double getWheelVelocity(){
@@ -107,13 +115,14 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    //resetEncoders();
+    resetEncoders();
     m_odometry.resetPosition(
         m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch(), pose);
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return m_diffDriveWheelSpeeds;
+    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(), m_rightEncoder.getVelocity());
+  
   }
 
   public double getLeftDistanceInch() {
@@ -160,12 +169,16 @@ public class Drivebase extends SubsystemBase {
     m_odometry.update(
       m_gyro.getRotation2d(), getLeftDistanceInch(), getRightDistanceInch());
     m_field.setRobotPose(m_odometry.getPoseMeters());
-    SmartDashboard.putNumber("rotations of left", m_leftEncoder.getPosition());
-    SmartDashboard.putNumber("rate of left", m_leftEncoder.getVelocity());
-    SmartDashboard.putNumber("rotations of right", m_rightEncoder.getPosition());
-    SmartDashboard.putNumber("rate of right", m_rightEncoder.getVelocity());
+    SmartDashboard.putNumber("Rotations of left", m_leftEncoder.getPosition());
+    SmartDashboard.putNumber("Rotations of right", m_rightEncoder.getPosition());
+    SmartDashboard.putNumber("Rate of left", m_leftEncoder.getVelocity());
+    SmartDashboard.putNumber("Rate of right", m_rightEncoder.getVelocity());
     SmartDashboard.putNumber("Angle Y", m_gyro.getRoll());
-    SmartDashboard.putNumber("Get Angle", m_gyro.getAngle());
+    SmartDashboard.putNumber("Angle Z", m_gyro.getAngle());
+    SmartDashboard.putNumber("Heading", getHeading());
+    SmartDashboard.putNumber("Right distance meters", getRightDistanceInch());
+    SmartDashboard.putNumber("Left distance meters", getLeftDistanceInch());
+    SmartDashboard.putNumber("Wheel Velocity" , getWheelVelocity());
   } 
 
   @Override

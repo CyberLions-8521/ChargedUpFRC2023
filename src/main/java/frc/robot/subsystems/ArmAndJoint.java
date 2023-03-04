@@ -34,8 +34,8 @@ public class ArmAndJoint extends SubsystemBase {
   private final RelativeEncoder m_ArmEncoder = m_armMotor.getEncoder();
   //private final AnalogPotentiometer m_armPotentiometer = new AnalogPotentiometer(0, 933, -30);
 
-  private final PIDController m_PIDArm = new PIDController(0.1, 0, 0);
-  private final PIDController m_PIDJoint = new PIDController(0.1, 0, 0);
+  private final PIDController m_PIDArm = new PIDController(0.001, 0, 0);
+  private final PIDController m_PIDJoint = new PIDController(0.001, 0, 0);
 
 
   public ArmAndJoint() {
@@ -81,7 +81,7 @@ public class ArmAndJoint extends SubsystemBase {
     );
   }
 
-  public CommandBase dog(double setpoint){
+  public CommandBase moveToAngle(double setpoint){
     return run(
       () -> {
         moveToAngleSetpointRACHEL(setpoint);
@@ -103,16 +103,16 @@ public class ArmAndJoint extends SubsystemBase {
     return m_limitSwitch.isPressed();
   }*/
 
-  public void move(double leftTrigger, double rightTrigger){
-    m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.02);
-    //m_armMotor.set(-leftTrigger * 0.25);
-    // if(right) {
-    //   m_armMotor.set(0.25);
-    // } else if(left) {
-    //   m_armMotor.set(-0.25);
-    // } else {
-    //   m_armMotor.set(0);
-    // }
+  public void move(double leftTrigger, double rightTrigger, boolean rightBumper, boolean leftBumper ){
+    m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.012);
+   // m_armMotor.set(-leftTrigger * 0.25);
+    if(rightBumper) {
+      m_armMotor.set(0.25);
+    } else if(leftBumper) {
+      m_armMotor.set(-0.25);
+    } else {
+      m_armMotor.set(0);
+    }
   }
 
   public double getCurrentAngle(){
@@ -135,7 +135,7 @@ public class ArmAndJoint extends SubsystemBase {
   }
 
   public double distanceFormula(double x1, double x2, double y1, double y2){
-    return ( Math.sqrt(Math.pow((x2 - x1),2) + Math.pow((y2 -y1),2)));
+    return ( Math.sqrt(Math.pow((x2 - x1),2) + Math.pow((y2 - y1),2)));
   }
 
   public void moveToAngleSetpoint(double SPx, double SPy){
@@ -153,7 +153,7 @@ public class ArmAndJoint extends SubsystemBase {
 
   public void moveToAngleSetpointRACHEL(double wantedAngle){
     double output = m_PIDJoint.calculate(getCurrentAngle(), wantedAngle);
-    m_jointGroup.set(output);
+    m_jointGroup.set(-output);
   }
 
   public void armExtrusionToSetpoint(double SPx, double SPy){
@@ -164,14 +164,17 @@ public class ArmAndJoint extends SubsystemBase {
   }
 
   public double getAngleToSetpoint(double SPx, double SPy){
-    return (Math.toDegrees(Math.atan(SPy/SPx)));
+    double angleToSetpoint = Math.toDegrees(Math.atan(SPy/SPx));
+    SmartDashboard.putNumber("Angle to Setpoint", angleToSetpoint);
+    return angleToSetpoint;
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Raw Joint Value", m_jointEncoder.getPosition());
-    // This method will be called once per scheduler run
     SmartDashboard.putNumber("Angle of Joint", getCurrentAngle());
+    SmartDashboard.putNumber("R2 Length", getR2Length());
+    SmartDashboard.putNumber("Absolute Encoder Values", getCurrentAngle());
     SmartDashboard.putNumber("R2 Length", getR2Length());
   }
 

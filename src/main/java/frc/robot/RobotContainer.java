@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Balancing;
 //import frc.robot.commands.Balancing;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.JoystickArm;
@@ -55,11 +56,11 @@ public class RobotContainer {
   private final JoystickArm m_joystickArm = new JoystickArm(m_armAndJoint);
   private final Drivebase m_drivebase = new Drivebase();
   private final Limelight m_limelight = new Limelight();
-  //private final Balancing m_balance = new Balancing(m_drivebase);
+  private final Balancing m_balance = new Balancing(m_drivebase);
   private final TurnToTarget m_turnToTarget = new TurnToTarget(m_limelight, m_drivebase, "april tag");
   public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
-  PathPlannerTrajectory birb = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  //PathPlannerTrajectory birb = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
   List<PathPlannerTrajectory> BluTopPos2NodesCharge = PathPlanner.loadPathGroup("BluTopPos2NodesCharge", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
   List<PathPlannerTrajectory> BluTopPos3Nodes = PathPlanner.loadPathGroup("BluTopPos3Nodes", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
   List<PathPlannerTrajectory> RedTopPos2NodesCharge = PathPlanner.loadPathGroup("RedTopPos2NodesCharge", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
@@ -68,12 +69,11 @@ public class RobotContainer {
   
   // private Command auto1 = autoDrive.fullAuto(pathGroup);
   PathPlannerTrajectory examplePath = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-  PIDConstants bruh = new PIDConstants(DriveConstants.kPDriveVel, DriveConstants.kIDriveVel, DriveConstants.kDDriveVel);
+  //PIDConstants bruh = new PIDConstants(DriveConstants.kPDriveVel, DriveConstants.kIDriveVel, DriveConstants.kDDriveVel);
   HashMap<String, Command> eventMap = new HashMap<>();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  //public final static XboxController m_driverController_reg =
-  //new XboxController(OperatorConstants.kDriverControllerPort);
+  public final static XboxController m_driverController_reg = new XboxController(1);
   public final static CommandXboxController m_driverController =
       new CommandXboxController(1);
 /* 
@@ -109,12 +109,12 @@ public class RobotContainer {
                 new PIDController(Constants.DriveConstants.kPDriveVel, 0, Constants.DriveConstants.kIDriveVel, Constants.DriveConstants.kDDriveVel), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 new PIDController(Constants.DriveConstants.kPDriveVel, 0, Constants.DriveConstants.kIDriveVel, Constants.DriveConstants.kDDriveVel), // Right controller (usually the same values as left controller)
                 m_drivebase::tankDriveVolts, // Voltage biconsumer
-                true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+                false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
                 m_drivebase // Requires this drive subsystem
             )
         );
       }
-      
+  //Command a = followTrajectoryCommand(examplePath,false);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // eventMap.put("arm_down", m_armAndJoint.PIDArmAndJoint(0, 0));
@@ -123,7 +123,7 @@ public class RobotContainer {
     // eventMap.put("claw_grab", m_claw.Grab());
     // eventMap.put("claw_drop", m_claw.Release());
     m_drivebase.setDefaultCommand(m_joystickDriving);
-    // m_chooser.setDefaultOption("Simple Auto", followTrajectoryCommand(birb, true));
+    //m_chooser.setDefaultOption("Simple Auto", followTrajectoryCommand(birb, true));
     // m_chooser.addOption("BluTopPos2NodesCharge",  autoDrive.fullAuto(BluTopPos2NodesCharge));
     // m_chooser.addOption("BluTopPos3Nodes",  autoDrive.fullAuto(BluTopPos3Nodes));
     // m_chooser.addOption("RedTopPos3Nodes",  autoDrive.fullAuto(RedTopPos3Nodes));
@@ -146,16 +146,14 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    //m_driverController.rightBumper().whileTrue(m_armAndJoint.retractArm());
-    //m_driverController.leftBumper().whileTrue(m_armAndJoint.extendArm());
-    // m_driverController.
     
-   m_driverController.y().whileTrue(m_claw.Grab());
-   m_driverController.b().whileTrue(m_claw.Release());
-   m_driverController.x().onTrue(m_armAndJoint.dog(45));
-
-   //SmartDashboard.putData("balance code", m_balance.withTimeout(9));
+    m_driverController.y().whileTrue(m_claw.Grab());
+    m_driverController.b().whileTrue(m_claw.Release());
+    //m_driverController.x().onTrue(m_armAndJoint.moveToAngle(45));
+    //m_driverController.rightBumper().whileTrue(m_armAndJoint.retractArm());
+   // m_driverController.leftBumper().whileTrue(m_armAndJoint.extendArm());
+;
+    SmartDashboard.putData("balance code", m_balance.withTimeout(9));
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(4,0));
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(2,-10));a
 
@@ -166,15 +164,17 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //return null;
-    // return m_chooser.getSelected();
+   // return null;
+   // return m_chooser.getSelected();
     // An example command will be run in autonomous
     //return m_armAndJoint.PIDArmAndJoint(3, 2);
-    return followTrajectoryCommand(examplePath, true);
+   //return a;
+   return followTrajectoryCommand(examplePath, false);
     //return m_chooser.getSelected();
     //return m_autoCommand;
     // for unit testing 
     //return new Balancing(m_drivebase)
+    //return m_turnToTarget;
 
   }
 }
