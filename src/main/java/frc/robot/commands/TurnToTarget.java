@@ -37,6 +37,7 @@ public class TurnToTarget extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_pid.setTolerance(1);
     // switch(target){
     //   case "april tag":
     //     pipelineNum = 0;
@@ -50,14 +51,14 @@ public class TurnToTarget extends CommandBase {
     //   default:
     //     pipelineNum = 0;
     // }
-    //m_limelight.setPipeline();
+    m_limelight.setPipeline(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double output = m_pid.calculate(m_limelight.getTx(), 0);
-    m_drivebase.arcadeDriveWithoutLimit(0,output);
+    m_drivebase.arcadeDriveWithoutLimit(0,-output);
   }
 
   // Called once the command ends or is interrupted.
@@ -67,6 +68,6 @@ public class TurnToTarget extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_pid.atSetpoint();
   }
 }

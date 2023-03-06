@@ -6,20 +6,25 @@ package frc.robot.commands;
 
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Limelight;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
 public class JoystickDriving extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Drivebase m_db;
+  private final Limelight m_ll;
+  PIDController m_aim = new PIDController(0.2, 0, 0);
 //hi
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public JoystickDriving(Drivebase db) {
+  public JoystickDriving(Drivebase db, Limelight ll) {
     m_db = db;
+    m_ll = ll;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(db);
   }
@@ -33,7 +38,12 @@ public class JoystickDriving extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(RobotContainer.m_driverController_reg.getAButton()){
+      m_ll.setPipeline(1);
+      m_db.arcadeDriveWithoutLimit(0, m_aim.calculate(m_ll.getTx(), 0));
+    }
     m_db.arcadeDrive(RobotContainer.m_driverController.getLeftY(), RobotContainer.m_driverController.getRightX());
+
     //m_db.arcadeDrive(-RobotContainer.m_driverController.getRightX(), RobotContainer.m_driverController.getLeftY());
   }
 

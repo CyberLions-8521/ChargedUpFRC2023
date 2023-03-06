@@ -58,17 +58,16 @@ public class RobotContainer {
   private final Limelight m_limelight = new Limelight();
   private final Balancing m_balance = new Balancing(m_drivebase);
   private final TurnToTarget m_turnToTarget = new TurnToTarget(m_limelight, m_drivebase, "april tag");
-  public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
+  public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase, m_limelight);
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
-  //PathPlannerTrajectory birb = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-  List<PathPlannerTrajectory> BluTopPos2NodesCharge = PathPlanner.loadPathGroup("BluTopPos2NodesCharge", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-  List<PathPlannerTrajectory> BluTopPos3Nodes = PathPlanner.loadPathGroup("BluTopPos3Nodes", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-  List<PathPlannerTrajectory> RedTopPos2NodesCharge = PathPlanner.loadPathGroup("RedTopPos2NodesCharge", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-  List<PathPlannerTrajectory> RedTopPos3Nodes = PathPlanner.loadPathGroup("RedTopPos3Nodes", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
-  
+  PathPlannerTrajectory birb = PathPlanner.loadPath("emmy", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  // List<PathPlannerTrajectory> BluTopPos2NodesCharge = PathPlanner.loadPathGroup("BluTopPos2NodesCharge", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  // List<PathPlannerTrajectory> BluTopPos3Nodes = PathPlanner.loadPathGroup("BluTopPos3Nodes", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  // List<PathPlannerTrajectory> RedTopPos2NodesCharge = PathPlanner.loadPathGroup("RedTopPos2NodesCharge", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  // List<PathPlannerTrajectory> RedTopPos3Nodes = PathPlanner.loadPathGroup("RedTopPos3Nodes", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
   
   // private Command auto1 = autoDrive.fullAuto(pathGroup);
-  PathPlannerTrajectory examplePath = PathPlanner.loadPath("bird", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+  PathPlannerTrajectory examplePath = PathPlanner.loadPath("emmy", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
   //PIDConstants bruh = new PIDConstants(DriveConstants.kPDriveVel, DriveConstants.kIDriveVel, DriveConstants.kDDriveVel);
   HashMap<String, Command> eventMap = new HashMap<>();
 
@@ -102,12 +101,17 @@ public class RobotContainer {
             new PPRamseteCommand(
                 traj, 
                 m_drivebase::getPose, // Pose supplier
-                new RamseteController(),
-                new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts, Constants.DriveConstants.kvVoltSecondsPerMeter, Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
+                new RamseteController(2, 0.7),
+                new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts,
+                 Constants.DriveConstants.kvVoltSecondsPerMeter, 
+                 Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
                 m_drivebase.getKinematics(), // DifferentialDriveKinematics
+                //m_drivebase.m_kinematics,
                 m_drivebase::getWheelSpeeds, // DifferentialDriveWheelSpeeds supplier
-                new PIDController(Constants.DriveConstants.kPDriveVel, 0, Constants.DriveConstants.kIDriveVel, Constants.DriveConstants.kDDriveVel), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                new PIDController(Constants.DriveConstants.kPDriveVel, 0, Constants.DriveConstants.kIDriveVel, Constants.DriveConstants.kDDriveVel), // Right controller (usually the same values as left controller)
+                new PIDController(Constants.DriveConstants.kPDriveVel, 0, 
+                  Constants.DriveConstants.kDDriveVel), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                new PIDController(Constants.DriveConstants.kPDriveVel, 0, 
+                  Constants.DriveConstants.kDDriveVel), // Right controller (usually the same values as left controller)
                 m_drivebase::tankDriveVolts, // Voltage biconsumer
                 false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
                 m_drivebase // Requires this drive subsystem
@@ -129,7 +133,6 @@ public class RobotContainer {
     // m_chooser.addOption("RedTopPos3Nodes",  autoDrive.fullAuto(RedTopPos3Nodes));
     // m_chooser.addOption("RedTopPos2NodesCharge",  autoDrive.fullAuto(RedTopPos2NodesCharge));
     m_armAndJoint.setDefaultCommand(m_joystickArm);
-    // SmartDashboard.putData(m_chooser);
     configureBindings();
   }
 
@@ -149,11 +152,12 @@ public class RobotContainer {
     
     m_driverController.y().whileTrue(m_claw.Grab());
     m_driverController.b().whileTrue(m_claw.Release());
-    //m_driverController.x().onTrue(m_armAndJoint.moveToAngle(45));
-    //m_driverController.rightBumper().whileTrue(m_armAndJoint.retractArm());
-   // m_driverController.leftBumper().whileTrue(m_armAndJoint.extendArm());
-;
+    m_driverController.a().whileTrue(new TurnToTarget(m_limelight, m_drivebase, "lol"));
+    m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(0.72, 1));
+   // m_driverController.x().onTrue(m_armAndJoint.moveToAngle(65));
+   // m_driverController.x().onTrue(m_armAndJoint.moveArm(0.3));
     SmartDashboard.putData("balance code", m_balance.withTimeout(9));
+    SmartDashboard.putData("resetEncArm",m_armAndJoint.resetArm());
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(4,0));
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(2,-10));a
 
@@ -164,12 +168,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-   // return null;
+    //return null;
    // return m_chooser.getSelected();
     // An example command will be run in autonomous
     //return m_armAndJoint.PIDArmAndJoint(3, 2);
    //return a;
-   return followTrajectoryCommand(examplePath, false);
+   return followTrajectoryCommand(examplePath, true);
     //return m_chooser.getSelected();
     //return m_autoCommand;
     // for unit testing 

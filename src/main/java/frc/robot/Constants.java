@@ -17,27 +17,26 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static final class ElevatorConstants{
-    public static final double height = 5;
-    public static final double r1 = 3;
+    public static final double r1 = 0.737; //meters
   }
 
   public static final class DriveConstants{
     public static final double kTrackwidthMeters = 0.6096;
     public static final double kWheelDiameter = 0.1524;
 
-    
-    public static final double ksVolts = 0.13302;
-    public static final double kvVoltSecondsPerMeter = 2.8449;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.20876;
+    public static final double ksVolts = 0.096808;
+    public static final double kvVoltSecondsPerMeter = 2.811;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.11014;
 
-    public static final double kPDriveVel = 0.0010915;
+    public static final double kPDriveVel = 0.9;
     public static final double kDDriveVel = 0.0;
-    public static final double kIDriveVel = 0.0;
-  
+    public static final double kIDriveVel = 0;
+
+    public static final double kCountsPerRevolution = 4069;
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 2.0;
+    public static final double kMaxSpeedMetersPerSecond = 1.0;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3.0;
 
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
@@ -46,7 +45,7 @@ public final class Constants {
   }
 
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final int kDriverControllerPort = 1;
     public static final int amogus = 0;
   }
 
