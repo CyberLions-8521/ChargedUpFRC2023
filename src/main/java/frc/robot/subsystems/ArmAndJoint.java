@@ -133,7 +133,7 @@ public class ArmAndJoint extends SubsystemBase {
   public void move(double leftTrigger, double rightTrigger, boolean rightBumper, boolean leftBumper ){
     //softLimit(0.05, leftTrigger, rightTrigger);
 
-    softLimit(0.02, 0.43, m_jointEncoder.getPosition());
+    softLimit(0.343, 0.74, m_jointEncoder.getPosition());
 
     m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.02);
     if(rightBumper) {
@@ -148,12 +148,9 @@ public class ArmAndJoint extends SubsystemBase {
   public double getCurrentAngle(){
     double revolutions = m_jointEncoder.getPosition();
     double angle = 0;
-    final double m = -213.389121339;
-    final double b = 117;
-    if (revolutions > 0 && revolutions < 0.36){
-      angle = m * revolutions + b;
-      SmartDashboard.putNumber("revolutions", revolutions);
-    }
+    final double m = -215.206;
+    final double b = 180;
+    angle = m * revolutions + b;
     return angle;
   }
 

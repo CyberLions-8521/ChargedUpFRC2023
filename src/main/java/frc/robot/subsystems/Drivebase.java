@@ -4,12 +4,13 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.CANCoder;
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxRelativeEncoder;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -17,14 +18,14 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import com.kauailabs.navx.frc.AHRS;
-import com.ctre.phoenix.sensors.CANCoder;
-
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
+import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 public class Drivebase extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -40,6 +41,9 @@ public class Drivebase extends SubsystemBase {
 
   private final CANCoder m_leftEncoder = new CANCoder(8);
   private final CANCoder m_rightEncoder = new CANCoder(9);
+
+  //private final RelativeEncoder m_leftEncoder = m_leftMaster.getEncoder(Type.kHallSensor, 42);
+  //private final RelativeEncoder m_rightEncoder = m_rightMaster.getEncoder(Type.kHallSensor, 42);
 
   private final SlewRateLimiter m_rateLimiter = new SlewRateLimiter(0.9);
 
@@ -131,11 +135,11 @@ public class Drivebase extends SubsystemBase {
   }
 
   public double getLeftDistanceInch() {
-    return (m_leftEncoder.getPosition() * Math.PI * Constants.DriveConstants.kWheelDiameter)/4096;
+    return (-m_leftEncoder.getPosition() * Math.PI * Constants.DriveConstants.kWheelDiameter)/42;
   }
 
   public double getRightDistanceInch() {
-    return (m_rightEncoder.getPosition() * Math.PI * Constants.DriveConstants.kWheelDiameter)/4096;
+    return (-m_rightEncoder.getPosition() * Math.PI * Constants.DriveConstants.kWheelDiameter)/42;
   }
 
   public double getAverageDistanceInch(){

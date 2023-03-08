@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Claw extends SubsystemBase {
   /** Creates a new Arm. */
   public Claw() {
-    m_doubleSolenoid.set(Value.kForward);
+    m_doubleSolenoid.set(Value.kReverse);
     comp.enableDigital();
   }
 
@@ -39,13 +39,13 @@ public class Claw extends SubsystemBase {
   public CommandBase Grab() {
     return runOnce(
         () -> {
-          m_doubleSolenoid.set(Value.kForward);
+          m_doubleSolenoid.set(Value.kReverse);
         });
   }
   public CommandBase Release() {
     return runOnce(
         () -> {
-          m_doubleSolenoid.set(Value.kReverse);
+          m_doubleSolenoid.set(Value.kForward);
         });
   }
   public CommandBase setOff() {

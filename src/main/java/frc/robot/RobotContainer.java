@@ -9,13 +9,13 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Balancing;
 //import frc.robot.commands.Balancing;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.JoystickArm;
+//import frc.robot.commands.JoystickArm;
 import frc.robot.subsystems.ArmAndJoint;
 
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.RamseteAutoBuilder;
 import frc.robot.subsystems.Claw;
-//import frc.robot.commands.JoystickArm;
+import frc.robot.commands.JoystickArm;
 //import frc.robot.subsystems.ArmAndJoint;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -132,7 +132,7 @@ public class RobotContainer {
     // m_chooser.addOption("BluTopPos3Nodes",  autoDrive.fullAuto(BluTopPos3Nodes));
     // m_chooser.addOption("RedTopPos3Nodes",  autoDrive.fullAuto(RedTopPos3Nodes));
     // m_chooser.addOption("RedTopPos2NodesCharge",  autoDrive.fullAuto(RedTopPos2NodesCharge));
-    m_armAndJoint.setDefaultCommand(m_joystickArm);
+    //m_armAndJoint.setDefaultCommand(m_joystickArm);
     configureBindings();
   }
 

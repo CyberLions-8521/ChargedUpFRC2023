@@ -38,10 +38,10 @@ public class JoystickDriving extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(RobotContainer.m_driverController_reg.getAButton()){
-      m_ll.setPipeline(1);
-      m_db.arcadeDriveWithoutLimit(0, m_aim.calculate(m_ll.getTx(), 0));
-    }
+    // if(RobotContainer.m_driverController_reg.getAButton()){
+    //   m_ll.setPipeline(1);
+    //   m_db.arcadeDriveWithoutLimit(0, m_aim.calculate(m_ll.getTx(), 0));
+    // }
     m_db.arcadeDrive(RobotContainer.m_driverController.getLeftY(), RobotContainer.m_driverController.getRightX());
 
     //m_db.arcadeDrive(-RobotContainer.m_driverController.getRightX(), RobotContainer.m_driverController.getLeftY());
