@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Backward;
 import frc.robot.commands.Balancing;
 //import frc.robot.commands.Balancing;
 import frc.robot.commands.ExampleCommand;
@@ -33,6 +34,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPRamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -132,7 +134,7 @@ public class RobotContainer {
     // m_chooser.addOption("BluTopPos3Nodes",  autoDrive.fullAuto(BluTopPos3Nodes));
     // m_chooser.addOption("RedTopPos3Nodes",  autoDrive.fullAuto(RedTopPos3Nodes));
     // m_chooser.addOption("RedTopPos2NodesCharge",  autoDrive.fullAuto(RedTopPos2NodesCharge));
-    //m_armAndJoint.setDefaultCommand(m_joystickArm);
+    m_armAndJoint.setDefaultCommand(m_joystickArm);
     configureBindings();
   }
 
@@ -153,7 +155,16 @@ public class RobotContainer {
     m_driverController.y().whileTrue(m_claw.Grab());
     m_driverController.b().whileTrue(m_claw.Release());
     m_driverController.a().whileTrue(new TurnToTarget(m_limelight, m_drivebase, "lol"));
-    m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(0.72, 1));
+    //very top
+    m_driverController.povUp().onTrue(m_armAndJoint.PIDArmAndJoint(1.1, 1.17));
+    //very top
+    //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(1.27, 0.9));
+    //very bottopm
+   //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(0.27, 0.47)); //0.27 0.47
+    //90 degrees
+    m_driverController.povDown().onTrue(m_armAndJoint.Lower());
+    m_driverController.povRight().onTrue(m_armAndJoint.PIDArmAndJoint(0.837, 1.1811));
+
    // m_driverController.x().onTrue(m_armAndJoint.moveToAngle(65));
    // m_driverController.x().onTrue(m_armAndJoint.moveArm(0.3));
     SmartDashboard.putData("balance code", m_balance.withTimeout(9));
@@ -168,17 +179,20 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+   // return m_drivebase.Backward();
     //return null;
+    return new Backward(m_drivebase, 10);
    // return m_chooser.getSelected();
     // An example command will be run in autonomous
     //return m_armAndJoint.PIDArmAndJoint(3, 2);
    //return a;
-   return followTrajectoryCommand(examplePath, true);
+   //return followTrajectoryCommand(examplePath, true);
     //return m_chooser.getSelected();
     //return m_autoCommand;
     // for unit testing 
     //return new Balancing(m_drivebase)
     //return m_turnToTarget;
-
+   // return new WaitCommand(5).andThen(new Backward(m_drivebase, 5)).withTimeout.alongWith()
+    //return new WaitCommand(.2).andThen(new MoveSeconds(m_drivebase, -0.6)).withTimeout(3).withTimeout(1).alongWith(new WaitCommand(4)).andThen(new AutoShoot(m_turret).alongWith(new indexOn(m_masterSubsystem)).withTimeout(3).andThen(new IndexOff(m_masterSubsystem)).andThen(new WaitCommand(0.5)));
   }
 }

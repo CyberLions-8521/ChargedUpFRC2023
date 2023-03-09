@@ -83,6 +83,16 @@ public class Drivebase extends SubsystemBase {
         });
   }
 
+  public CommandBase Backward() {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return run(
+        () -> {
+          arcadeDriveWithoutLimit(-0.5, 0);
+          /* one-time action goes here */
+        }).withTimeout(3);
+  }
+
   // public double setDistancePerPulse(double wheelDiameter, double countsPerRevolution){
   //  return ((Math.PI * wheelDiameter) / countsPerRevolution);
   // }

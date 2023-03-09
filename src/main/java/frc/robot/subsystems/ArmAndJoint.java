@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxLimitSwitch;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -29,15 +31,18 @@ public class ArmAndJoint extends SubsystemBase {
   public final CANSparkMax m_armMotor = new CANSparkMax(Constants.MotorControllerIDs.ARM_MOTOR, MotorType.kBrushless);
   public final AbsoluteEncoder m_jointEncoder = m_jointMotor2.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
   public final MotorControllerGroup m_jointGroup = new MotorControllerGroup(m_jointMotor1, m_jointMotor2);
-
+  DigitalInput armlimitSwitch = new DigitalInput(0);
   private final RelativeEncoder m_armEncoder = m_armMotor.getEncoder();
   //private final AnalogPotentiometer m_armPotentiometer = new AnalogPotentiometer(0, 933, -30);
 
-  private final PIDController m_PIDArm = new PIDController(1, 0.08, 0);
-  private final PIDController m_PIDJoint = new PIDController(0.015, 0.00004, 0.000001);
+  private final PIDController m_PIDArm = new PIDController(0.9, 0.008, 0);
+  private final PIDController m_PIDJoint = new PIDController(0.009, 0.00004, 0.000003);
   double heightOfJoint = 1.1811;
 
   public ArmAndJoint() {
+    m_jointMotor1.setIdleMode(IdleMode.kBrake);
+    m_jointMotor2.setIdleMode(IdleMode.kBrake);
+
     //m_jointEncoder.setPosition(0);
     //m_jointMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
     m_armMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
@@ -79,10 +84,36 @@ public class ArmAndJoint extends SubsystemBase {
     return run(
       () -> {
         moveToAngleSetpoint(SPx, SPy);
+        softLimit(0.343, 0.74, m_jointEncoder.getPosition());
         armExtrusionToSetpoint(SPx, SPy);
+      }
+    ).withTimeout(3);
+  }
+
+  
+  public CommandBase PIDAngle(double theta){
+    return run(
+      () -> {
+        moveToAngleSetpointRACHEL(theta);
       }
     );
   }
+
+  public CommandBase Lower(){
+    return run(
+      () -> {
+        m_jointGroup.set(-0.1);
+        m_armMotor.set(-0.1);
+        softLimit(0.343, 0.77, m_jointEncoder.getPosition());
+        if(getR2Length() < 0.2) {
+          m_armMotor.set(0);
+        }
+      }
+    ).withTimeout(1.5);
+  } 
+
+
+
 
   // public CommandBase movingEntireArm(double angle, double meters){
   //   return run(
@@ -132,10 +163,9 @@ public class ArmAndJoint extends SubsystemBase {
 
   public void move(double leftTrigger, double rightTrigger, boolean rightBumper, boolean leftBumper ){
     //softLimit(0.05, leftTrigger, rightTrigger);
+    softLimit(0.343, 0.77, m_jointEncoder.getPosition());
 
-    softLimit(0.343, 0.74, m_jointEncoder.getPosition());
-
-    m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.02);
+    m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 +0.01) ;
     if(rightBumper) {
       m_armMotor.set(0.5);
     } else if(leftBumper) {
@@ -230,6 +260,7 @@ public class ArmAndJoint extends SubsystemBase {
   @Override
   public void periodic() {
     PolarToXY();
+    SmartDashboard.putBoolean("Limit switch", armlimitSwitch.get());
     //SmartDashboard.putNumber("Raw Joint Value", m_jointEncoder.getPosition());
     SmartDashboard.putNumber("Angle of Joint", getCurrentAngle());
     SmartDashboard.putNumber("Absolute Encoder Values", m_jointEncoder.getPosition());
