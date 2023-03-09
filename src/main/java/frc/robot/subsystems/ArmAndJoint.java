@@ -15,6 +15,7 @@ import com.revrobotics.SparkMaxAlternateEncoder.Type;
 import com.revrobotics.AbsoluteEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
@@ -31,7 +32,7 @@ public class ArmAndJoint extends SubsystemBase {
   public final CANSparkMax m_armMotor = new CANSparkMax(Constants.MotorControllerIDs.ARM_MOTOR, MotorType.kBrushless);
   public final AbsoluteEncoder m_jointEncoder = m_jointMotor2.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
   public final MotorControllerGroup m_jointGroup = new MotorControllerGroup(m_jointMotor1, m_jointMotor2);
-  DigitalInput armlimitSwitch = new DigitalInput(0);
+  public DigitalInput armlimitSwitch = new DigitalInput(0);
   private final RelativeEncoder m_armEncoder = m_armMotor.getEncoder();
   //private final AnalogPotentiometer m_armPotentiometer = new AnalogPotentiometer(0, 933, -30);
 
@@ -50,6 +51,9 @@ public class ArmAndJoint extends SubsystemBase {
     m_jointMotor1.setSoftLimit(SoftLimitDirection.kReverse, 0);
     m_jointMotor2.setSoftLimit(SoftLimitDirection.kReverse, 0);
     m_armEncoder.setPosition(0);
+    m_PIDArm.setTolerance(0.1);
+    m_PIDJoint.setTolerance(2);
+
   }
 
   /**
@@ -80,15 +84,31 @@ public class ArmAndJoint extends SubsystemBase {
       });
   }
 
-  public CommandBase PIDArmAndJoint(double SPx, double SPy){
-    return run(
-      () -> {
-        moveToAngleSetpoint(SPx, SPy);
-        softLimit(0.343, 0.74, m_jointEncoder.getPosition());
-        armExtrusionToSetpoint(SPx, SPy);
-      }
-    ).withTimeout(3);
+  // public CommandBase PIDArmAndJoint(double SPx, double SPy){
+  //   return run(
+  //     () -> {
+  //       moveToAngleSetpoint(SPx, SPy);
+  //       softLimit(0.343, 0.74, m_jointEncoder.getPosition());
+  //       armExtrusionToSetpoint(SPx, SPy);
+  //     }
+  //   ).until(ArmAndJoint:isAtSetpointArm());
+  // }
+
+  public void PIDArmAndJoint(double SPx, double SPy){
+    moveToAngleSetpoint(SPx, SPy);
+    softLimit(0.343, 0.74, m_jointEncoder.getPosition());
+    armExtrusionToSetpoint(SPx, SPy);
   }
+
+  public boolean isAtSetpointJoint(){
+    return m_PIDJoint.atSetpoint();
+
+  }
+
+  public boolean isAtSetpointArm(){
+    return m_PIDArm.atSetpoint();
+  }
+
 
   
   public CommandBase PIDAngle(double theta){
@@ -107,9 +127,9 @@ public class ArmAndJoint extends SubsystemBase {
         softLimit(0.343, 0.77, m_jointEncoder.getPosition());
         if(getR2Length() < 0.2) {
           m_armMotor.set(0);
-        }
+        }    
       }
-    ).withTimeout(1.5);
+    ).withTimeout(0.5);
   } 
 
 
@@ -141,7 +161,7 @@ public class ArmAndJoint extends SubsystemBase {
   }
 
   public CommandBase resetArm() {
-    return run (
+    return runOnce (
       ()-> {
         m_armEncoder.setPosition(0);
       }
@@ -243,6 +263,10 @@ public class ArmAndJoint extends SubsystemBase {
   public double getAngleToSetpoint(double SPx, double SPy){
     double angleToSetpoint = Math.toDegrees(Math.atan((SPy-heightOfJoint)/SPx))+90;    SmartDashboard.putNumber("Angle to Setpoint", angleToSetpoint);
     return angleToSetpoint;
+  }
+
+  public boolean getLimitSwitch() {
+    return armlimitSwitch.get();
   }
 
   public void PolarToXY(){

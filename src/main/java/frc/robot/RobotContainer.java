@@ -23,6 +23,8 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.JoystickDriving;
+import frc.robot.commands.Lower;
+import frc.robot.commands.PIDArmAndJoint;
 import frc.robot.commands.TurnToTarget;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -60,7 +62,7 @@ public class RobotContainer {
   private final Limelight m_limelight = new Limelight();
   private final Balancing m_balance = new Balancing(m_drivebase);
   private final TurnToTarget m_turnToTarget = new TurnToTarget(m_limelight, m_drivebase, "april tag");
-  public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase, m_limelight);
+  public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
   PathPlannerTrajectory birb = PathPlanner.loadPath("emmy", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
   // List<PathPlannerTrajectory> BluTopPos2NodesCharge = PathPlanner.loadPathGroup("BluTopPos2NodesCharge", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
@@ -156,14 +158,14 @@ public class RobotContainer {
     m_driverController.b().whileTrue(m_claw.Release());
     m_driverController.a().whileTrue(new TurnToTarget(m_limelight, m_drivebase, "lol"));
     //very top
-    m_driverController.povUp().onTrue(m_armAndJoint.PIDArmAndJoint(1.1, 1.17));
+    m_driverController.povUp().onTrue(new PIDArmAndJoint(m_armAndJoint,1.1, 1.17));
     //very top
     //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(1.27, 0.9));
     //very bottopm
    //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(0.27, 0.47)); //0.27 0.47
     //90 degrees
-    m_driverController.povDown().onTrue(m_armAndJoint.Lower());
-    m_driverController.povRight().onTrue(m_armAndJoint.PIDArmAndJoint(0.837, 1.1811));
+    m_driverController.povDown().onTrue(new Lower(m_armAndJoint));
+    m_driverController.povRight().onTrue(new PIDArmAndJoint(m_armAndJoint, 0.837, 1.1811));
 
    // m_driverController.x().onTrue(m_armAndJoint.moveToAngle(65));
    // m_driverController.x().onTrue(m_armAndJoint.moveArm(0.3));
