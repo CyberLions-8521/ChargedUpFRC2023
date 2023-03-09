@@ -17,7 +17,7 @@ public class TurnToTarget extends CommandBase {
   private final String target;
   private int pipelineNum = 1;
 
-  private final PIDController m_pid = new PIDController(0.01, 0.0001, 0.015);
+  private final PIDController m_pid = new PIDController(0.0025, 0.03, 0.001); //0.01 0.0001 0.015
 
   /**
    * Creates a new ExampleCommand.

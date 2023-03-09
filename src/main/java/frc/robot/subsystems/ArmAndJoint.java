@@ -163,11 +163,10 @@ public class ArmAndJoint extends SubsystemBase {
 
   public void move(double leftTrigger, double rightTrigger, boolean rightBumper, boolean leftBumper ){
     //softLimit(0.05, leftTrigger, rightTrigger);
+    m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.015) ;
     softLimit(0.343, 0.77, m_jointEncoder.getPosition());
-
-    m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 +0.02) ;
     if(rightBumper) {
-      m_armMotor.set(0.5);
+      m_armMotor.set(0.75);
     } else if(leftBumper) {
       m_armMotor.set(-0.5);
     } else {
