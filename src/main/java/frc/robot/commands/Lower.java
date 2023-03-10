@@ -34,7 +34,7 @@ public class Lower extends CommandBase {
   public void execute() {
     m_subsystem.m_jointGroup.set(-0.1);
     m_subsystem.m_armMotor.set(-0.1);
-    m_subsystem. softLimit(0.343, 0.77, m_subsystem.m_jointEncoder.getPosition());
+    m_subsystem. softLimit(0.343, 0.75, m_subsystem.m_jointEncoder.getPosition());
     if(m_subsystem.getR2Length() < 0.2) {
       m_subsystem.m_armMotor.set(0);  
     }
@@ -48,6 +48,6 @@ public class Lower extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_subsystem.getCurrentAngle() < 15;
+    return m_subsystem.getCurrentAngle() < 12;
   }
 }

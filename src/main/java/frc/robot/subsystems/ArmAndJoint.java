@@ -13,6 +13,8 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
 import com.revrobotics.AbsoluteEncoder;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -144,6 +146,44 @@ public class ArmAndJoint extends SubsystemBase {
   //   )
   // }
 
+  public void armLimit(){
+    if(armlimitSwitch.get()){
+      m_armEncoder.setPosition(0);
+      m_armMotor.set(0.1);
+    } else if(m_armEncoder.getPosition() > 7) {
+
+    }
+  }
+
+  public void setArmSpeed(double speed) {
+    if (speed > 0) {
+        if (armlimitSwitch.get()) {
+            // We are going up and top limit is tripped so stop
+            m_armMotor.set(0.1);
+          } else {
+            // We are going up but top limit is not tripped so go at commanded speed
+            m_armMotor.set(speed);
+          }
+    } else {
+        if (m_armEncoder.getPosition() > 7) {
+            // We are going down and bottom limit is tripped so stop
+            m_armMotor.set(-0.1);
+        } else {
+            // We are going down but bottom limit is not tripped so go at commanded speed
+            m_armMotor.set(speed);
+        }
+    }
+}
+
+public void setArmSpeedSoft() {
+  if(m_armEncoder.getPosition() < 5){
+    m_armMotor.set(0.2);
+  } else if(m_armEncoder.getPosition() >80){
+    m_armMotor.set(-0.2);
+  }
+
+}
+
   public CommandBase moveToAngle(double setpoint){
     return run(
       () -> {
@@ -185,14 +225,32 @@ public class ArmAndJoint extends SubsystemBase {
     //softLimit(0.05, leftTrigger, rightTrigger);
     m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.015) ;
     softLimit(0.343, 0.77, m_jointEncoder.getPosition());
+    setArmSpeedSoft();
     if(rightBumper) {
+      setArmSpeedSoft();
       m_armMotor.set(0.75);
     } else if(leftBumper) {
+      setArmSpeedSoft();
       m_armMotor.set(-0.5);
     } else {
       m_armMotor.set(0);
     }
   }
+
+  
+  // public void move(double leftTrigger, double rightTrigger, boolean rightBumper, boolean leftBumper ){
+  //   //softLimit(0.05, leftTrigger, rightTrigger);
+  //   m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.015) ;
+  //   softLimit(0.343, 0.76, m_jointEncoder.getPosition());
+  //   if(rightBumper) {
+  //     m_armMotor.set(0.75);
+  //   } else if(leftBumper) {
+  //     m_armMotor.set(-0.5);
+  //   } else {
+  //     m_armMotor.set(0);
+  //   }
+  // }
+
 
   public double getCurrentAngle(){
     double revolutions = m_jointEncoder.getPosition();
@@ -237,7 +295,7 @@ public class ArmAndJoint extends SubsystemBase {
 
   public void moveToAngleSetpointBigK(double SPx, double SPy){
     double setpoint = getAngleToSetpoint(SPx, SPy);
-    double output = m_PIDJoint.calculate(getCurrentAngle(), setpoint);
+    double output = MathUtil.clamp(m_PIDJoint.calculate(getCurrentAngle(), setpoint),-0.3,0.3);
     m_jointGroup.set(output);
   }
 

@@ -79,14 +79,14 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    getDetectedTarget();
-    double x = tx.getDouble(0.0);
-    double y = ty.getDouble(0.0);
-    double area = ta.getDouble(0.0);
-    SmartDashboard.putNumber("LimelightX", x);
-    SmartDashboard.putNumber("LimelightY", y);
-    SmartDashboard.putNumber("LimelightArea", area);
-    SmartDashboard.putNumber("pipe", NetworkTableInstance.getDefault().getTable("limelight").getEntry("getpipe").getDouble(0)); 
+    // getDetectedTarget();
+    // double x = tx.getDouble(0.0);
+    // double y = ty.getDouble(0.0);
+    // double area = ta.getDouble(0.0);
+    // SmartDashboard.putNumber("LimelightX", x);
+    // SmartDashboard.putNumber("LimelightY", y);
+    // SmartDashboard.putNumber("LimelightArea", area);
+    // SmartDashboard.putNumber("pipe", NetworkTableInstance.getDefault().getTable("limelight").getEntry("getpipe").getDouble(0)); 
     SmartDashboard.putBoolean("Target detected", getDetectedTarget());
   }
 

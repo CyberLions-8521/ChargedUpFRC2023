@@ -155,14 +155,14 @@ public class RobotContainer {
     m_driverController.b().whileTrue(m_claw.Release());
     m_driverController.a().whileTrue(new TurnToTarget(m_limelight, m_drivebase));
     //very top
-    m_driverController.povUp().toggleOnTrue(new PIDArmAndJoint(m_armAndJoint,1.1, 1.4));
+    m_driverController.povUp().onTrue(new PIDArmAndJoint(m_armAndJoint, 1.1, 1.17));
     //very top
     //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(1.27, 0.9));
     //very bottopm
    //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(0.27, 0.47)); //0.27 0.47
     //90 degrees
-    m_driverController.povDown().toggleOnTrue(new Lower(m_armAndJoint));
-    m_driverController.povRight().toggleOnTrue(new PIDArmAndJoint(m_armAndJoint, 0.837, 1.1));
+    m_driverController.povDown().onTrue(new Lower(m_armAndJoint));
+    m_driverController.povRight().onTrue(new PIDArmAndJoint(m_armAndJoint,0.837, 1.1811));
 
    // m_driverController.x().onTrue(m_armAndJoint.moveToAngle(65));
    // m_driverController.x().onTrue(m_armAndJoint.moveArm(0.3));
@@ -181,17 +181,5 @@ public class RobotContainer {
    // return m_drivebase.Backward();
     //return null;
     return new Backward(m_drivebase, 10);
-   // return m_chooser.getSelected();
-    // An example command will be run in autonomous
-    //return m_armAndJoint.PIDArmAndJoint(3, 2);
-   //return a;
-   //return followTrajectoryCommand(examplePath, true);
-    //return m_chooser.getSelected();
-    //return m_autoCommand;
-    // for unit testing 
-    //return new Balancing(m_drivebase)
-    //return m_turnToTarget;
-   // return new WaitCommand(5).andThen(new Backward(m_drivebase, 5)).withTimeout.alongWith()
-    //return new WaitCommand(.2).andThen(new MoveSeconds(m_drivebase, -0.6)).withTimeout(3).withTimeout(1).alongWith(new WaitCommand(4)).andThen(new AutoShoot(m_turret).alongWith(new indexOn(m_masterSubsystem)).withTimeout(3).andThen(new IndexOff(m_masterSubsystem)).andThen(new WaitCommand(0.5)));
   }
 }
