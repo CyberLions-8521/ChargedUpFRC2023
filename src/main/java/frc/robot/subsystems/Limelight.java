@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Limelight extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public Limelight() {
-    CameraServer.startAutomaticCapture();
   }
 
   /**
@@ -83,7 +82,6 @@ public class Limelight extends SubsystemBase {
     getDetectedTarget();
     double x = tx.getDouble(0.0);
     double y = ty.getDouble(0.0);
-    double v = tv.getDouble(0.0);
     double area = ta.getDouble(0.0);
     SmartDashboard.putNumber("LimelightX", x);
     SmartDashboard.putNumber("LimelightY", y);

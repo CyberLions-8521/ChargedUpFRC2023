@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+ // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -27,7 +27,6 @@ import frc.robot.commands.Lower;
 import frc.robot.commands.PIDArmAndJoint;
 import frc.robot.commands.TurnToTarget;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.HashMap;
 import java.util.List;
@@ -61,9 +60,7 @@ public class RobotContainer {
   private final Drivebase m_drivebase = new Drivebase();
   private final Limelight m_limelight = new Limelight();
   private final Balancing m_balance = new Balancing(m_drivebase);
-  private final TurnToTarget m_turnToTarget = new TurnToTarget(m_limelight, m_drivebase, "april tag");
   public final JoystickDriving m_joystickDriving = new JoystickDriving(m_drivebase);
-  private final SendableChooser<Command> m_chooser = new SendableChooser<>();
   PathPlannerTrajectory birb = PathPlanner.loadPath("emmy", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
   // List<PathPlannerTrajectory> BluTopPos2NodesCharge = PathPlanner.loadPathGroup("BluTopPos2NodesCharge", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
   // List<PathPlannerTrajectory> BluTopPos3Nodes = PathPlanner.loadPathGroup("BluTopPos3Nodes", new PathConstraints(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
@@ -156,16 +153,16 @@ public class RobotContainer {
     
     m_driverController.y().whileTrue(m_claw.Grab());
     m_driverController.b().whileTrue(m_claw.Release());
-    m_driverController.a().whileTrue(new TurnToTarget(m_limelight, m_drivebase, "lol"));
+    m_driverController.a().whileTrue(new TurnToTarget(m_limelight, m_drivebase));
     //very top
-    m_driverController.povUp().toggleOnTrue(new PIDArmAndJoint(m_armAndJoint,1.1, 1.17));
+    m_driverController.povUp().toggleOnTrue(new PIDArmAndJoint(m_armAndJoint,1.1, 1.4));
     //very top
     //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(1.27, 0.9));
     //very bottopm
    //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(0.27, 0.47)); //0.27 0.47
     //90 degrees
     m_driverController.povDown().toggleOnTrue(new Lower(m_armAndJoint));
-    m_driverController.povRight().toggleOnTrue(new PIDArmAndJoint(m_armAndJoint, 0.837, 1.1811));
+    m_driverController.povRight().toggleOnTrue(new PIDArmAndJoint(m_armAndJoint, 0.837, 1.1));
 
    // m_driverController.x().onTrue(m_armAndJoint.moveToAngle(65));
    // m_driverController.x().onTrue(m_armAndJoint.moveArm(0.3));

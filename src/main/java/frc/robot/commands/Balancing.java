@@ -38,7 +38,6 @@ public class Balancing extends CommandBase {
   @Override
   public void execute() {
     double outputAngle = m_pidAngle.calculate(m_db.m_gyro.getRoll(), 0);
-    double outputStraight = -m_pidStraight.calculate(m_db.getHeading(), 0);
     m_db.arcadeDriveWithoutLimit((Math.abs(outputAngle) > limit) ?  limit * Math.signum(outputAngle) : outputAngle, 0);
   }
 

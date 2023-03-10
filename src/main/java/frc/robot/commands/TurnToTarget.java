@@ -14,8 +14,6 @@ public class TurnToTarget extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Limelight m_limelight;
   private final Drivebase m_drivebase;
-  private final String target;
-  private int pipelineNum = 1;
 
   private final PIDController m_pid = new PIDController(0.0025, 0.03, 0.001); //0.01 0.0001 0.015
 
@@ -24,10 +22,9 @@ public class TurnToTarget extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public TurnToTarget(Limelight limelight, Drivebase drivebase, String selection) {
+  public TurnToTarget(Limelight limelight, Drivebase drivebase) {
     m_limelight = limelight;
     m_drivebase = drivebase;
-    target = selection;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(limelight);
@@ -37,21 +34,6 @@ public class TurnToTarget extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_pid.setTolerance(1);
-    // switch(target){
-    //   case "april tag":
-    //     pipelineNum = 0;
-    //     break;
-    //   case "cone":
-    //     pipelineNum = 1;
-    //     break;
-    //   case "cube":
-    //     pipelineNum = 2;
-    //     break;
-    //   default:
-    //     pipelineNum = 0;
-    // }
-    m_limelight.setPipeline(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
