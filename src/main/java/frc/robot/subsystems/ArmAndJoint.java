@@ -52,7 +52,7 @@ public class ArmAndJoint extends SubsystemBase {
     m_jointMotor2.setSoftLimit(SoftLimitDirection.kReverse, 0);
     m_armEncoder.setPosition(0);
     m_PIDArm.setTolerance(0.1);
-    m_PIDJoint.setTolerance(2);
+    m_PIDJoint.setTolerance(4);
 
   }
 
@@ -291,6 +291,7 @@ public class ArmAndJoint extends SubsystemBase {
     SmartDashboard.putNumber("R3Length", getR3Length());
     SmartDashboard.putNumber("Arm Encoder Readings", m_armEncoder.getPosition());
     SmartDashboard.putNumber("lkafja;dskfk", m_PIDJoint.calculate(getCurrentAngle(), 45));
+    SmartDashboard.putBoolean("At setpoint", isAtSetpointJoint());
   }
 
   @Override
