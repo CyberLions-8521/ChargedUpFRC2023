@@ -156,14 +156,14 @@ public class RobotContainer {
     m_driverController.b().whileTrue(m_claw.Release());
     m_driverController.a().whileTrue(new TurnToTarget(m_limelight, m_drivebase));
     //very top
-    m_driverController.povUp().onTrue(new PIDArmAndJoint(m_armAndJoint, 1.1, 1.17));
+    m_driverController.povUp().onTrue(new PIDArmAndJoint(m_armAndJoint, 1.21, 1.17));
     //very top
     //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(1.27, 0.9));
     //very bottopm
    //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(0.27, 0.47)); //0.27 0.47
     //90 degrees
     m_driverController.povDown().onTrue(new Lower(m_armAndJoint));
-    m_driverController.povRight().onTrue(new PIDArmAndJoint(m_armAndJoint,1, 0.9));
+    m_driverController.povRight().onTrue(new PIDArmAndJoint(m_armAndJoint,0.78, 1.035));
 
    // m_driverController.x().onTrue(m_armAndJoint.moveToAngle(65));
    // m_driverController.x().onTrue(m_armAndJoint.moveArm(0.3));
