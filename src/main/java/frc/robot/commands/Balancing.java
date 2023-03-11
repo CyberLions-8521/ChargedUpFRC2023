@@ -15,7 +15,6 @@ public class Balancing extends CommandBase {
   private final Drivebase m_db;
   private final double limit = 0.5;
   private final PIDController m_pidAngle = new PIDController(0.2, 0.01, 0);
-  private final PIDController m_pidStraight = new PIDController(0.4, 0, 0);
 
   /**
    * Creates a new ExampleCommand.

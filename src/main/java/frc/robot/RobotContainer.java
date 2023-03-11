@@ -26,6 +26,7 @@ import frc.robot.commands.JoystickDriving;
 import frc.robot.commands.Lower;
 import frc.robot.commands.PIDArmAndJoint;
 import frc.robot.commands.TurnToTarget;
+import frc.robot.commands.armReset;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.HashMap;
@@ -162,12 +163,14 @@ public class RobotContainer {
    //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(0.27, 0.47)); //0.27 0.47
     //90 degrees
     m_driverController.povDown().onTrue(new Lower(m_armAndJoint));
-    m_driverController.povRight().onTrue(new PIDArmAndJoint(m_armAndJoint,0.837, 1.1811));
+    m_driverController.povRight().onTrue(new PIDArmAndJoint(m_armAndJoint,1, 0.9));
 
    // m_driverController.x().onTrue(m_armAndJoint.moveToAngle(65));
    // m_driverController.x().onTrue(m_armAndJoint.moveArm(0.3));
     SmartDashboard.putData("balance code", m_balance.withTimeout(9));
     SmartDashboard.putData("resetEncArm",m_armAndJoint.resetArm());
+    SmartDashboard.putData("resetArm",new armReset(m_armAndJoint));
+
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(4,0));
     // m_driverController.a().toggleOnTrue(m_armAndJoint.PIDArmAndJoint(2,-10));a
 
@@ -179,7 +182,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
    // return m_drivebase.Backward();
-    //return null;
-    return new Backward(m_drivebase, 10);
+    return null;
+    //return new Backward(m_drivebase, 10);
   }
 }

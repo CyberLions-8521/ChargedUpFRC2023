@@ -112,7 +112,7 @@ public class Drivebase extends SubsystemBase {
   // }
 
   public void arcadeDrive(double xSpeed, double zSpeed){
-    m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed * 0.98), zSpeed * 0.4);
+    m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed * 0.98), zSpeed *0.3);
   }
 
   public void arcadeDriveWithoutLimit(double xSpeed, double zSpeed){
@@ -200,18 +200,18 @@ public class Drivebase extends SubsystemBase {
     m_odometry.update(
       m_gyro.getRotation2d(), getLeftDistanceMeter(), getLeftDistanceMeter());
     m_field.setRobotPose(m_odometry.getPoseMeters());
-    SmartDashboard.putData("Field", m_field);
-    SmartDashboard.putNumber("Rotations of left", m_leftEncoder.getPosition());
-    SmartDashboard.putNumber("Rotations of right", m_rightEncoder.getPosition());
-    SmartDashboard.putNumber("Rate of left", m_leftEncoder.getVelocity());
-    SmartDashboard.putNumber("Rate of right", m_rightEncoder.getVelocity());
-    SmartDashboard.putNumber("Angle Y", m_gyro.getRoll());
-    SmartDashboard.putNumber("Angle Z", m_gyro.getAngle());
+    // SmartDashboard.putData("Field", m_field);
+    // SmartDashboard.putNumber("Rotations of left", m_leftEncoder.getPosition());
+    // SmartDashboard.putNumber("Rotations of right", m_rightEncoder.getPosition());
+    // SmartDashboard.putNumber("Rate of left", m_leftEncoder.getVelocity());
+    // SmartDashboard.putNumber("Rate of right", m_rightEncoder.getVelocity());
+    // SmartDashboard.putNumber("Angle Y", m_gyro.getRoll());
+    // SmartDashboard.putNumber("Angle Z", m_gyro.getAngle());
     SmartDashboard.putNumber("Heading", getHeading());
-    SmartDashboard.putNumber("Right distance meters", getRightDistanceMeter());
-    SmartDashboard.putNumber("Left distance meters", getLeftDistanceMeter());
-    SmartDashboard.putNumber("Left Wheel Velocity" , m_diffDriveWheelSpeeds.leftMetersPerSecond);
-    SmartDashboard.putNumber("Right Wheel Velocity" , m_diffDriveWheelSpeeds.rightMetersPerSecond);
+    // SmartDashboard.putNumber("Right distance meters", getRightDistanceMeter());
+    // SmartDashboard.putNumber("Left distance meters", getLeftDistanceMeter());
+    // SmartDashboard.putNumber("Left Wheel Velocity" , m_diffDriveWheelSpeeds.leftMetersPerSecond);
+    // SmartDashboard.putNumber("Right Wheel Velocity" , m_diffDriveWheelSpeeds.rightMetersPerSecond);
 
   } 
 

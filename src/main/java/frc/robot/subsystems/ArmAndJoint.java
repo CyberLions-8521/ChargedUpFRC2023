@@ -35,7 +35,7 @@ public class ArmAndJoint extends SubsystemBase {
   public final AbsoluteEncoder m_jointEncoder = m_jointMotor2.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
   public final MotorControllerGroup m_jointGroup = new MotorControllerGroup(m_jointMotor1, m_jointMotor2);
   public DigitalInput armlimitSwitch = new DigitalInput(0);
-  private final RelativeEncoder m_armEncoder = m_armMotor.getEncoder();
+  public final RelativeEncoder m_armEncoder = m_armMotor.getEncoder();
   //private final AnalogPotentiometer m_armPotentiometer = new AnalogPotentiometer(0, 933, -30);
 
   private final PIDController m_PIDArm = new PIDController(0.9, 0.008, 0);
@@ -50,8 +50,10 @@ public class ArmAndJoint extends SubsystemBase {
     //m_jointMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
     m_armMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
     m_jointMotor1.setInverted(true);
-    m_jointMotor1.setSoftLimit(SoftLimitDirection.kReverse, 0);
-    m_jointMotor2.setSoftLimit(SoftLimitDirection.kReverse, 0);
+    m_armMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+    m_armMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+    m_armMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 75);
+    m_armMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
     m_armEncoder.setPosition(0);
     m_PIDArm.setTolerance(0.1);
     m_PIDJoint.setTolerance(4);
@@ -98,7 +100,7 @@ public class ArmAndJoint extends SubsystemBase {
 
   public void PIDArmAndJoint(double SPx, double SPy){
     moveToAngleSetpoint(SPx, SPy);
-    softLimit(0.343, 0.74, m_jointEncoder.getPosition());
+    //softLimit(0.343, 0.74, m_jointEncoder.getPosition());
     armExtrusionToSetpoint(SPx, SPy);
   }
 
@@ -126,7 +128,7 @@ public class ArmAndJoint extends SubsystemBase {
       () -> {
         m_jointGroup.set(-0.1);
         m_armMotor.set(-0.1);
-        softLimit(0.343, 0.77, m_jointEncoder.getPosition());
+        //softLimit(0.343, 0.77, m_jointEncoder.getPosition());
         if(getR2Length() < 0.2) {
           m_armMotor.set(0);
         }    
@@ -221,22 +223,45 @@ public void setArmSpeedSoft() {
     return m_limitSwitch.isPressed();
   }*/
 
+  // public void move(double leftTrigger, double rightTrigger, boolean rightBumper, boolean leftBumper ){
+  //   //softLimit(0.05, leftTrigger, rightTrigger);
+  //   float power = (-leftTrigger + rightTrigger) * 0.1 + 0.015;
+  //   // if(position > uppr || position  < lower){
+  //   //   power = 0.0;
+  //   // }
+  //   m_jointGroup.set(softlimit(power));
+    
+    
+  //   m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.015) ;
+  //   softLimit(0.4, 0.75, m_jointEncoder.getPosition());
+  //   if(rightBumper) {
+  //     m_armMotor.set(0.75);
+  //   } else if(leftBumper) {
+  //     m_armMotor.set(-0.5);
+  //   } else {
+  //     m_armMotor.set(0);
+  //   }
+  // }
+
   public void move(double leftTrigger, double rightTrigger, boolean rightBumper, boolean leftBumper ){
     //softLimit(0.05, leftTrigger, rightTrigger);
-    m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.015) ;
-    softLimit(0.343, 0.77, m_jointEncoder.getPosition());
-    setArmSpeedSoft();
+    double power = (-leftTrigger + rightTrigger) * 0.1 + 0.015;
+    // if(position > uppr || position  < lower){
+    //   power = 0.0;
+    // }
+    m_jointGroup.set(softLimit(0.4, 0.73,m_jointEncoder.getPosition(), power));
+    
+    
+    // m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.015) ;
+    // softLimit(0.4, 0.75, m_jointEncoder.getPosition());
     if(rightBumper) {
-      setArmSpeedSoft();
       m_armMotor.set(0.75);
     } else if(leftBumper) {
-      setArmSpeedSoft();
       m_armMotor.set(-0.5);
     } else {
       m_armMotor.set(0);
     }
   }
-
   
   // public void move(double leftTrigger, double rightTrigger, boolean rightBumper, boolean leftBumper ){
   //   //softLimit(0.05, leftTrigger, rightTrigger);
@@ -255,23 +280,35 @@ public void setArmSpeedSoft() {
   public double getCurrentAngle(){
     double revolutions = m_jointEncoder.getPosition();
     double angle = 0;
-    final double m = -215.206;
-    final double b = 180;
+    final double m = -218.183;
+    final double b = 180.243;
     angle = m * revolutions + b;
     return angle;
   }
 
-  public void softLimit(double upper, double lower, double input){
-    while(upper > m_jointEncoder.getPosition()){
-      m_jointGroup.set(0);
+  // public void softLimit(double upper, double lower, double input){
+  //   while(upper > input){
+  //     m_jointGroup.set(0);
+  //   }
+  //   while(lower < input){
+  //     m_jointGroup.set(0.1);
+  //     if(lower-0.03>= input){
+  //       break;
+  //     }
+  //   }
+  // }
+
+  public double softLimit(double upper, double lower, double input, double power){
+    if(upper > input){
+      return 0;
     }
-    while(lower < m_jointEncoder.getPosition()){
-      m_jointGroup.set(0.1);
-      if(lower-0.03>= m_jointEncoder.getPosition()){
-        break;
-      }
+    if (lower < input-0.03){
+      return 0.1;
     }
+
+    return power;
   }
+
 
   public double getR2Length(){
     final double m = 0.00673312;
@@ -289,7 +326,7 @@ public void setArmSpeedSoft() {
 
   public void moveToAngleSetpoint(double SPx, double SPy){
     double output = m_PIDJoint.calculate(getCurrentAngle(), getAngleToSetpoint(SPx, SPy));
-    m_jointGroup.set(output);
+    m_jointGroup.set(softLimit(0.4, 0.73,m_jointEncoder.getPosition(), output));
     SmartDashboard.putNumber("Angle Distance to Setpoint", getAngleToSetpoint(SPx, SPy));
   }
 
@@ -302,7 +339,7 @@ public void setArmSpeedSoft() {
   public void moveToAngleSetpointRACHEL(double wantedAngle){
     double output = m_PIDJoint.calculate(getCurrentAngle(), wantedAngle);
     m_jointGroup.set(output);
-    softLimit(0.0125, 0.4, m_jointEncoder.getPosition());
+    //softLimit(0.0125, 0.4, m_jointEncoder.getPosition());
     SmartDashboard.putNumber("output of angle motor", output);
   }
 
@@ -340,17 +377,17 @@ public void setArmSpeedSoft() {
   //(1.05,1.17) h2
   @Override
   public void periodic() {
-    PolarToXY();
+    //PolarToXY();
     SmartDashboard.putBoolean("Limit switch", armlimitSwitch.get());
     //SmartDashboard.putNumber("Raw Joint Value", m_jointEncoder.getPosition());
     SmartDashboard.putNumber("Angle of Joint", getCurrentAngle());
     SmartDashboard.putNumber("Absolute Encoder Values", m_jointEncoder.getPosition());
-    SmartDashboard.putNumber("R2 Length", getR2Length());
-    SmartDashboard.putNumber("R3Length", getR3Length());
+   // SmartDashboard.putNumber("R2 Length", getR2Length());
+    //SmartDashboard.putNumber("R3Length", getR3Length());
     SmartDashboard.putNumber("Arm Encoder Readings", m_armEncoder.getPosition());
-    SmartDashboard.putNumber("lkafja;dskfk", m_PIDJoint.calculate(getCurrentAngle(), 45));
-    SmartDashboard.putBoolean("At setpoint", isAtSetpointJoint());
-  }
+    // m_armMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 80);
+    // m_armMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
+}
 
   @Override
   public void simulationPeriodic() {

@@ -32,12 +32,9 @@ public class Lower extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.m_jointGroup.set(-0.1);
-    m_subsystem.m_armMotor.set(-0.1);
-    m_subsystem. softLimit(0.343, 0.75, m_subsystem.m_jointEncoder.getPosition());
-    if(m_subsystem.getR2Length() < 0.2) {
-      m_subsystem.m_armMotor.set(0);  
-    }
+    m_subsystem.m_jointGroup.set(m_subsystem.softLimit(0.343, 0.72, m_subsystem.m_jointEncoder.getPosition(),-0.1));
+    m_subsystem.m_armMotor.set(-0.8);
+    //m_subsystem.softLimit(0.343, 0.75, m_subsystem.m_jointEncoder.getPosition());
   }
 
   // Called once the command ends or is interrupted.
@@ -48,6 +45,6 @@ public class Lower extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_subsystem.getCurrentAngle() < 12;
+    return m_subsystem.getCurrentAngle() < 25;
   }
 }

@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class JoystickDriving extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Drivebase m_db;
-  PIDController m_aim = new PIDController(0.2, 0, 0);
 //hi
   /**
    * Creates a new ExampleCommand.
