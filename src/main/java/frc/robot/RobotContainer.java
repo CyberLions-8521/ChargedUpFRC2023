@@ -92,34 +92,34 @@ public class RobotContainer {
     m_drivebase // Requires this drive subsystem
   );*/
 
-      // public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
-      //   return new SequentialCommandGroup(
-      //       new InstantCommand(() -> {
-      //         // Reset odometry for the first path you run during auto
-      //         if(isFirstPath){
-      //             m_drivebase.resetOdometry(traj.getInitialPose());
-      //         }
-      //       }),
-      //       new PPRamseteCommand(
-      //           traj, 
-      //           m_drivebase::getPose, // Pose supplier
-      //           new RamseteController(2, 0.7),
-      //           new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts,
-      //            Constants.DriveConstants.kvVoltSecondsPerMeter, 
-      //            Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
-      //           m_drivebase.getKinematics(), // DifferentialDriveKinematics
-      //           //m_drivebase.m_kinematics,
-      //           m_drivebase::getWheelSpeeds, // DifferentialDriveWheelSpeeds supplier
-      //           new PIDController(Constants.DriveConstants.kPDriveVel, 0, 
-      //             Constants.DriveConstants.kDDriveVel), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-      //           new PIDController(Constants.DriveConstants.kPDriveVel, 0, 
-      //             Constants.DriveConstants.kDDriveVel), // Right controller (usually the same values as left controller)
-      //           m_drivebase::tankDriveVolts, // Voltage biconsumer
-      //           false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-      //           m_drivebase // Requires this drive subsystem
-      //       )
-      //   );
-      // }
+      public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> {
+              // Reset odometry for the first path you run during auto
+              if(isFirstPath){
+                  m_drivebase.resetOdometry(traj.getInitialPose());
+              }
+            }),
+            new PPRamseteCommand(
+                traj, 
+                m_drivebase::getPose, // Pose supplier
+                new RamseteController(2, 0.7),
+                new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts,
+                 Constants.DriveConstants.kvVoltSecondsPerMeter, 
+                 Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
+                m_drivebase.getKinematics(), // DifferentialDriveKinematics
+                //m_drivebase.m_kinematics,
+                m_drivebase::getWheelSpeeds, // DifferentialDriveWheelSpeeds supplier
+                new PIDController(Constants.DriveConstants.kPDriveVel, 0, 
+                  Constants.DriveConstants.kDDriveVel), // Left controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                new PIDController(Constants.DriveConstants.kPDriveVel, 0, 
+                  Constants.DriveConstants.kDDriveVel), // Right controller (usually the same values as left controller)
+                m_drivebase::tankDriveVolts, // Voltage biconsumer
+                false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+                m_drivebase // Requires this drive subsystem
+            )
+        );
+      }
   //Command a = followTrajectoryCommand(examplePath,false);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -130,9 +130,10 @@ public class RobotContainer {
     // eventMap.put("claw_grab", m_claw.Grab());
     // eventMap.put("claw_drop", m_claw.Release());
     m_drivebase.setDefaultCommand(m_joystickDriving);
-    m_chooser.setDefaultOption("BackwardSmall", new Backward(m_drivebase, 0.25));
-    m_chooser.setDefaultOption("no Auto", null);
+    m_chooser.addOption("BackwardSmall", new Backward(m_drivebase, 0.25));
+    m_chooser.addOption("no Auto", null);
     m_chooser.setDefaultOption("Backward out of community ", new Backward(m_drivebase, 4));
+    //m_chooser.setDefaultOption("test", followTrajectoryCommand(birb, true));
     // m_chooser.addOption("BluTopPos2NodesCharge",  autoDrive.fullAuto(BluTopPos2NodesCharge));
     // m_chooser.addOption("BluTopPos3Nodes",  autoDrive.fullAuto(BluTopPos3Nodes));
     // m_chooser.addOption("RedTopPos3Nodes",  autoDrive.fullAuto(RedTopPos3Nodes));
@@ -159,14 +160,14 @@ public class RobotContainer {
     m_driverController.b().whileTrue(m_claw.Release());
     m_driverController.a().whileTrue(new TurnToTarget(m_limelight, m_drivebase));
     //very top
-    m_driverController.povUp().onTrue(new PIDArmAndJoint(m_armAndJoint, 1.21, 1.1));
+    m_driverController.povUp().onTrue(new PIDArmAndJoint(m_armAndJoint, 1.21, 1.23));
     //very top
     //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(1.27, 0.9));
     //very bottopm
    //m_driverController.x().onTrue(m_armAndJoint.PIDArmAndJoint(0.27, 0.47)); //0.27 0.47
     //90 degrees
     m_driverController.povDown().onTrue(new Lower(m_armAndJoint));
-    m_driverController.povRight().onTrue(new PIDArmAndJoint(m_armAndJoint,1.08, 1.035));
+    m_driverController.povRight().onTrue(new PIDArmAndJoint(m_armAndJoint,1.08, 1.09));
 
    // m_driverController.x().onTrue(m_armAndJoint.moveToAngle(65));
    // m_driverController.x().onTrue(m_armAndJoint.moveArm(0.3));

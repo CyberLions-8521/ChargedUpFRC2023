@@ -55,8 +55,8 @@ public class ArmAndJoint extends SubsystemBase {
     m_armMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 75);
     m_armMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
     m_armEncoder.setPosition(0);
-    m_PIDArm.setTolerance(0.1);
-    m_PIDJoint.setTolerance(4);
+    m_PIDArm.setTolerance(0.07);
+    m_PIDJoint.setTolerance(3.5);
 
   }
 
@@ -245,11 +245,11 @@ public void setArmSpeedSoft() {
 
   public void move(double leftTrigger, double rightTrigger, boolean rightBumper, boolean leftBumper ){
     //softLimit(0.05, leftTrigger, rightTrigger);
-    double power = (-leftTrigger + rightTrigger) * 0.12 + 0.015;
+    double power = (-leftTrigger + rightTrigger) * 0.13 + 0.015;
     // if(position > uppr || position  < lower){
     //   power = 0.0;
     // }
-    m_jointGroup.set(softLimit(0.4, 0.73,m_jointEncoder.getPosition(), power));
+    m_jointGroup.set(softLimit(0.36, 0.737,m_jointEncoder.getPosition(), power));
     
     
     // m_jointGroup.set((-leftTrigger + rightTrigger) * 0.1 + 0.015) ;
@@ -326,7 +326,7 @@ public void setArmSpeedSoft() {
 
   public void moveToAngleSetpoint(double SPx, double SPy){
     double output = m_PIDJoint.calculate(getCurrentAngle(), getAngleToSetpoint(SPx, SPy));
-    m_jointGroup.set(softLimit(0.4, 0.73,m_jointEncoder.getPosition(), output));
+    m_jointGroup.set(softLimit(0.36, 0.73,m_jointEncoder.getPosition(), output));
     //SmartDashboard.putNumber("Angle Distance to Setpoint", getAngleToSetpoint(SPx, SPy));
   }
 

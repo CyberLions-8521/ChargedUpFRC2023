@@ -168,14 +168,14 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    m_leftGroup.setVoltage(leftVolts);
-    m_rightGroup.setVoltage(rightVolts);
+    m_leftGroup.setVoltage(-leftVolts);
+    m_rightGroup.setVoltage(-rightVolts);
     m_diffDrive.feed();
   }
 
   public void tankDrive(double leftSpeed, double rightSpeed){
-    m_leftGroup.set(leftSpeed);
-    m_rightGroup.set(rightSpeed);
+    m_leftGroup.set(-leftSpeed);
+    m_rightGroup.set(-rightSpeed);
   }
 
   public void setMaxOutput(double maxOutput) {
@@ -196,14 +196,14 @@ public class Drivebase extends SubsystemBase {
   
   @Override
   public void periodic() {
-    // m_odometry.update(
-    //   m_gyro.getRotation2d(), getLeftDistanceMeter(), getLeftDistanceMeter());
-    // m_field.setRobotPose(m_odometry.getPoseMeters());
-    // SmartDashboard.putData("Field", m_field);
-    // SmartDashboard.putNumber("Rotations of left", m_leftEncoder.getPosition());
-    // SmartDashboard.putNumber("Rotations of right", m_rightEncoder.getPosition());
-    // SmartDashboard.putNumber("Rate of left", m_leftEncoder.getVelocity());
-    // SmartDashboard.putNumber("Rate of right", m_rightEncoder.getVelocity());
+    m_odometry.update(
+      m_gyro.getRotation2d(), getLeftDistanceMeter(), getLeftDistanceMeter());
+    m_field.setRobotPose(m_odometry.getPoseMeters());
+    SmartDashboard.putData("Field", m_field);
+    SmartDashboard.putNumber("Rotations of left", m_leftEncoder.getPosition());
+    SmartDashboard.putNumber("Rotations of right", m_rightEncoder.getPosition());
+    SmartDashboard.putNumber("Rate of left", m_leftEncoder.getVelocity());
+    SmartDashboard.putNumber("Rate of right", m_rightEncoder.getVelocity());
     // SmartDashboard.putNumber("Angle Y", m_gyro.getRoll());
     // SmartDashboard.putNumber("Angle Z", m_gyro.getAngle());
     SmartDashboard.putNumber("Heading", getHeading());
