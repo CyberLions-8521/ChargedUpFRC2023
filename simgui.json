@@ -1,7 +1,17 @@
 {
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/balance code": "Command",
+      "/SmartDashboard/resetArm": "Command",
+      "/SmartDashboard/resetEncArm": "Command"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
+      }
     }
   }
 }

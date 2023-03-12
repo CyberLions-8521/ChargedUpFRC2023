@@ -29,7 +29,7 @@ public class Backward extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drivebase.resetEncoders();
+   // m_drivebase.resetEncoders();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -46,6 +46,6 @@ public class Backward extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(m_drivebase.getAverageDistanceInch()) > distance;
+   return Math.abs(m_drivebase.getAverageDistanceInch()) > distance;
   }
 }

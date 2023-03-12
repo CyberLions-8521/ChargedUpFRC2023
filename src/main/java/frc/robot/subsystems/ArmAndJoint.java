@@ -39,7 +39,7 @@ public class ArmAndJoint extends SubsystemBase {
   //private final AnalogPotentiometer m_armPotentiometer = new AnalogPotentiometer(0, 933, -30);
 
   private final PIDController m_PIDArm = new PIDController(0.9, 0.008, 0);
-  private final PIDController m_PIDJoint = new PIDController(0.009, 0.00004, 0.000003);
+  private final PIDController m_PIDJoint = new PIDController(0.0095, 0.00006, 0.000003);
   double heightOfJoint = 1.1811;
 
   public ArmAndJoint() {
@@ -245,7 +245,7 @@ public void setArmSpeedSoft() {
 
   public void move(double leftTrigger, double rightTrigger, boolean rightBumper, boolean leftBumper ){
     //softLimit(0.05, leftTrigger, rightTrigger);
-    double power = (-leftTrigger + rightTrigger) * 0.1 + 0.015;
+    double power = (-leftTrigger + rightTrigger) * 0.12 + 0.015;
     // if(position > uppr || position  < lower){
     //   power = 0.0;
     // }
@@ -257,7 +257,7 @@ public void setArmSpeedSoft() {
     if(rightBumper) {
       m_armMotor.set(0.75);
     } else if(leftBumper) {
-      m_armMotor.set(-0.5);
+      m_armMotor.set(-0.6);
     } else {
       m_armMotor.set(0);
     }
@@ -327,7 +327,7 @@ public void setArmSpeedSoft() {
   public void moveToAngleSetpoint(double SPx, double SPy){
     double output = m_PIDJoint.calculate(getCurrentAngle(), getAngleToSetpoint(SPx, SPy));
     m_jointGroup.set(softLimit(0.4, 0.73,m_jointEncoder.getPosition(), output));
-    SmartDashboard.putNumber("Angle Distance to Setpoint", getAngleToSetpoint(SPx, SPy));
+    //SmartDashboard.putNumber("Angle Distance to Setpoint", getAngleToSetpoint(SPx, SPy));
   }
 
   public void moveToAngleSetpointBigK(double SPx, double SPy){

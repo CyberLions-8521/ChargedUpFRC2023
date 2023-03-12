@@ -32,7 +32,7 @@ import com.revrobotics.SparkMaxRelativeEncoder.Type;
 public class Drivebase extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   private Field2d m_field = new Field2d();
-  //public DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(Constants.DriveConstants.kTrackwidthMeters);
+  public DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(Constants.DriveConstants.kTrackwidthMeters);
   private final DifferentialDriveOdometry m_odometry;
 
   private final CANSparkMax m_leftMaster = new CANSparkMax(Constants.MotorControllerIDs.LEFT_MASTER, MotorType.kBrushless);
@@ -40,16 +40,15 @@ public class Drivebase extends SubsystemBase {
 
   private final CANSparkMax m_rightMaster = new CANSparkMax(Constants.MotorControllerIDs.RIGHT_MASTER, MotorType.kBrushless);
   private final CANSparkMax m_rightSlave = new CANSparkMax(Constants.MotorControllerIDs.RIGHT_SLAVE, MotorType.kBrushless);
-
-  private final CANCoder m_leftEncoder = new CANCoder(8);
-  private final CANCoder m_rightEncoder = new CANCoder(9);
+ private final CANCoder m_leftEncoder = new CANCoder(8);
+ private final CANCoder m_rightEncoder = new CANCoder(9);
 
   private final SlewRateLimiter m_rateLimiter = new SlewRateLimiter(0.9);
 
   public final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftMaster, m_leftSlave);
   public final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightMaster, m_rightSlave);
 
-  public final DifferentialDriveWheelSpeeds m_diffDriveWheelSpeeds = new DifferentialDriveWheelSpeeds((m_leftEncoder.getVelocity() * Math.PI * DriveConstants.kWheelDiameter), 
+ public final DifferentialDriveWheelSpeeds m_diffDriveWheelSpeeds = new DifferentialDriveWheelSpeeds((m_leftEncoder.getVelocity() * Math.PI * DriveConstants.kWheelDiameter), 
   (m_rightEncoder.getVelocity() * Math.PI * DriveConstants.kWheelDiameter));
 
   private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftGroup, m_rightGroup);
@@ -76,7 +75,7 @@ public class Drivebase extends SubsystemBase {
 
     m_rightGroup.setInverted(false);
     m_gyro.reset();
-    resetEncoders();
+  //   resetEncoders();
 
     m_odometry =
     new DifferentialDriveOdometry(
@@ -112,7 +111,7 @@ public class Drivebase extends SubsystemBase {
   // }
 
   public void arcadeDrive(double xSpeed, double zSpeed){
-    m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed * 0.98), zSpeed *0.3);
+    m_diffDrive.arcadeDrive(m_rateLimiter.calculate(xSpeed * 0.9), zSpeed *0.5);
   }
 
   public void arcadeDriveWithoutLimit(double xSpeed, double zSpeed){
@@ -197,9 +196,9 @@ public class Drivebase extends SubsystemBase {
   
   @Override
   public void periodic() {
-    m_odometry.update(
-      m_gyro.getRotation2d(), getLeftDistanceMeter(), getLeftDistanceMeter());
-    m_field.setRobotPose(m_odometry.getPoseMeters());
+    // m_odometry.update(
+    //   m_gyro.getRotation2d(), getLeftDistanceMeter(), getLeftDistanceMeter());
+    // m_field.setRobotPose(m_odometry.getPoseMeters());
     // SmartDashboard.putData("Field", m_field);
     // SmartDashboard.putNumber("Rotations of left", m_leftEncoder.getPosition());
     // SmartDashboard.putNumber("Rotations of right", m_rightEncoder.getPosition());

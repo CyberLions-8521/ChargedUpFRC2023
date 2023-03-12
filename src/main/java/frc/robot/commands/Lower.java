@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class Lower extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ArmAndJoint m_subsystem;
-  private double x;
-  private double y;
   /**
    * Creates a new ExampleCommand.
    *

@@ -15,7 +15,7 @@ public class TurnToTarget extends CommandBase {
   private final Limelight m_limelight;
   private final Drivebase m_drivebase;
 
-  private final PIDController m_pid = new PIDController(0.0025, 0.03, 0.001); //0.01 0.0001 0.015
+  private final PIDController m_pid = new PIDController(0.0028, 0.03, 0.001); //0.01 0.0001 0.015
 
   /**
    * Creates a new ExampleCommand.
